@@ -27,9 +27,10 @@ dl dl dd { margin: 0px 0px 20px 5px; }
 
 #parallax { position:absolute; top:0px; left:0px; width:100%; height:2000px; background:#000 url(../images/bg.jpg) no-repeat; }
 .parallax_target { position:absolute; border-radius:50px; background:#fff; }
+.planet { z-index:2; top:200px; left:50px; width:150px; height:150px; }
+.another_planet { z-index:1; top:200px; left:250px; width:150px; height:150px; background:#ccc; }
+
 .asteroid { z-index:6; top:100px; left:300px; width:100px; height:100px; }
 .planetoid { z-index:5; top:20px; left:600px; width:200px; height:200px; }
-.planet { z-index:4; top:550px; left:50px; width:150px; height:150px; }
-.another_planet { z-index:3; top:800px; left:200px; width:50px; height:50px; }
-.satellite { z-index:2; top:200px; left:400px; width:30px; height:30px; }
+.satellite { z-index:2; top:150px; left:400px; width:30px; height:30px; }
 body { z-index:1; }
