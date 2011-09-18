@@ -1,0 +1,35 @@
+body { background:#000; }
+p { margin:0px 0px 5px 0px; font-size:13px }
+a, a:visited, a:active { color:#9E905B; font-weight:bold }
+a:hover { color:#beb07B; }
+h1 { font-size:36px; color:#335151}
+h3 { color:#335151; font-weight:normal }
+h1, h3 { margin-bottom:0px; text-shadow:2px 2px 0 #bdd; }
+.main { margin:20px 0px; overflow:hidden; }
+.container { margin-top:20px; }
+.header, .section_title, .section_content { padding:20px 60px 40px 40px; }
+.header h3 { margin-top:0px }
+.header p { margin-top:10px }
+.section_content { padding-top:0px; background:#fff }
+.section_title { font-size:150%; font-weight:bold; color:#577; border-top:1px solid #bfcfcf; box-shadow:0px -5px 5px #bfcfcf; background:#fff }
+.section_title h3 { margin-top:10px }
+.section_content { font-size:92%; line-height:1.6em; color:#444; margin:0px 0px 0px 0px; }
+.section_content strong { background:#799; color:#fff; padding:1px 5px; }
+.section_content p { margin-bottom:20px }
+.section_content .parameter_name strong { background:transparent; color:#444; padding:0px 0px 0px 0px; }
+.parameter_name { font-size:114%;  }
+code { width:63%; padding: 10px 2%; margin: 10px 10px 20px 10px; background:#333; color:#ffc; display:block; white-space:pre; -webkit-border-radius:10px; -moz-border-radius:10px; -o-border-radius:10px; border-radius:10px; }
+code.markup_example { width:63%; height:200px; padding:10px 2%; overflow:scroll; }
+code.markup_example p { margin: 0px 0px 0px 0px; }
+dl { margin-bottom:0px }
+dl dl { margin: 0px 0px 0px 15px; }
+dl dl dd { margin: 0px 0px 20px 5px; }
+
+#parallax { position:absolute; top:0px; left:0px; width:100%; height:2000px; background:#000 url(../images/bg.jpg) no-repeat; }
+.parallax_target { position:absolute; border-radius:50px; background:#fff; }
+.asteroid { z-index:6; top:100px; left:300px; width:100px; height:100px; }
+.planetoid { z-index:5; top:20px; left:600px; width:200px; height:200px; }
+.planet { z-index:4; top:550px; left:50px; width:150px; height:150px; }
+.another_planet { z-index:3; top:800px; left:200px; width:50px; height:50px; }
+.satellite { z-index:2; top:200px; left:400px; width:30px; height:30px; }
+body { z-index:1; }

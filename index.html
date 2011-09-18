@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Anti-Modal Demo</title>
+	
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="luis buenaventura (@helloluis), infinite.ly">
+	<script language="Javascript" src="javascripts/jquery.1.6.2.min.js"></script>
+	<script language="Javascript" src="javascripts/jquery.parallax.js"></script>
+	<link rel="stylesheet" href="stylesheets/reset_h5bp.css">
+	<link rel="stylesheet" href="stylesheets/parallax_demo.css">
+	
+</head>
+<body>
+
+<div id="parallax">
+  <div class="parallax_target planetoid"></div>
+  <div class="parallax_target asteroid"></div>
+  <div class="parallax_target planet"></div>
+  <div class="parallax_target planet"></div>
+  <div class="parallax_target planet"></div>
+  <div class="parallax_target planet"></div>
+  <div class="parallax_target another_planet"></div>
+  <div class="parallax_target satellite"></div>
+  <div class="parallax_target satellite" style="top:400px; left:50px"></div>
+</div>
+
+<script>
+
+// Behaviours for this Demo Page
+$(function(){
+  $("#parallax").parallax({
+    targets : [
+      ".satellite",
+      ".another_planet",
+      ".planet",
+      ".planetoid",
+      ".asteroid"
+    ]
+    // targets : [
+    //   [".satellite", 1],
+    //   [".another_planet", 2],
+    //   [".planet", 3],
+    //   [".planetoid", 4],
+    //   [".asteroid", 5]
+    // ]
+  });
+});
+</script>
+</body>
+</html>
