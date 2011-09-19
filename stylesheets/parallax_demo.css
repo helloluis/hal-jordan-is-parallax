@@ -1,36 +1,28 @@
 body { background:#000; }
-p { margin:0px 0px 5px 0px; font-size:13px }
+p { margin:0px 0px 5px 0px; font-size:13px; color:#ffc; display:inline; }
 a, a:visited, a:active { color:#9E905B; font-weight:bold }
 a:hover { color:#beb07B; }
-h1 { font-size:36px; color:#335151}
-h3 { color:#335151; font-weight:normal }
-h1, h3 { margin-bottom:0px; text-shadow:2px 2px 0 #bdd; }
-.main { margin:20px 0px; overflow:hidden; }
-.container { margin-top:20px; }
-.header, .section_title, .section_content { padding:20px 60px 40px 40px; }
-.header h3 { margin-top:0px }
-.header p { margin-top:10px }
-.section_content { padding-top:0px; background:#fff }
-.section_title { font-size:150%; font-weight:bold; color:#577; border-top:1px solid #bfcfcf; box-shadow:0px -5px 5px #bfcfcf; background:#fff }
-.section_title h3 { margin-top:10px }
-.section_content { font-size:92%; line-height:1.6em; color:#444; margin:0px 0px 0px 0px; }
-.section_content strong { background:#799; color:#fff; padding:1px 5px; }
-.section_content p { margin-bottom:20px }
-.section_content .parameter_name strong { background:transparent; color:#444; padding:0px 0px 0px 0px; }
-.parameter_name { font-size:114%;  }
-code { width:63%; padding: 10px 2%; margin: 10px 10px 20px 10px; background:#333; color:#ffc; display:block; white-space:pre; -webkit-border-radius:10px; -moz-border-radius:10px; -o-border-radius:10px; border-radius:10px; }
-code.markup_example { width:63%; height:200px; padding:10px 2%; overflow:scroll; }
-code.markup_example p { margin: 0px 0px 0px 0px; }
-dl { margin-bottom:0px }
-dl dl { margin: 0px 0px 0px 15px; }
-dl dl dd { margin: 0px 0px 20px 5px; }
+h1 { font-size:40px; color:#fff}
+h2 { color:#fff; font-size:36px; }
+h3 { color:#fff; font-weight:normal }
+h1, h3 { margin-bottom:0px; }
 
-#parallax { position:absolute; top:0px; left:0px; width:100%; height:2000px; background:#000 url(../images/bg.jpg) no-repeat; }
-.parallax_target { position:absolute; border-radius:50px; background:#fff; }
-.planet { z-index:2; top:200px; left:50px; width:150px; height:150px; }
-.another_planet { z-index:1; top:200px; left:250px; width:150px; height:150px; background:#ccc; }
+#sidebar { position:absolute; top:50px; left:670px; z-index:2; width:180px; padding:20px; height:auto; background:#000; } 
+#nav { list-style-type:none; margin:0px; padding:0px; }
+#nav a { font-size:24px; }
 
-.asteroid { z-index:6; top:100px; left:300px; width:100px; height:100px; }
-.planetoid { z-index:5; top:20px; left:600px; width:200px; height:200px; }
-.satellite { z-index:2; top:150px; left:400px; width:30px; height:30px; }
-body { z-index:1; }
+#main { position:absolute; top:0px; left:0px; width:100%; height:2000px; }
+
+.main_slides { position:absolute; top:0px; left:0px; width:600px; margin:50px; padding:0px; overflow:hidden; }
+.main_slide { position:absolute; width:600px; height:500px; z-index:39; }
+.main_slide .inner { padding:20px 20px 0px 20px; margin-bottom:20px; width:560px; height:460px; border-radius:20px; background:rgba(0,0,0,0.5); }
+
+.slideshow { width:500px; height:300px; background:#777; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; }
+.parallax_target { position:absolute; }
+
+.space { position:absolute; width:100%; height:2000px; z-index:1; background:#000 url(../images/bg.jpg) no-repeat; }
+.planet { z-index:5; top:400px; left:0px; width:300px; height:300px; border-radius:200px; background:#633; }
+.asteroid { z-index:4; top:800px; left:350px; width:600px; height:200px; background:#333; }
+.satellite { z-index:3; top:1050px; left:600px; width:100px; height:100px; background:#444; }
+.planet2 { z-index:5; top:1350px; left:750px; width:200px; height:200px; border-radius:150px; background:#444; }
+

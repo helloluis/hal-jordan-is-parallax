@@ -64,8 +64,7 @@
   
   $.Parallax.settings = {
     orientation     : "vertical",
-    increment       : 1,
-    canvas_area     : [1024, 768],
+    ignore_hashes   : false,
     targets         : []
   };
   
@@ -80,52 +79,47 @@
 
       this.options     = $.extend( true, {}, $.Parallax.settings, options );
 
-      var para         = this,
-          orientation  = this.options.orientation;
-      
-      this.orig_data   = [];
+      var para         = this;
+      this.orientation = this.options.orientation;
+      this.target_data   = [];
 
       if (this.options.targets.length===0) {
-        this.targets   = [ this.element ].concat(this.element.children());
+        this.targets   = this.element.children();
       } else {
-        this.targets   = [ this.element ].concat($.map(this.options.targets,
-          function(target){
-            if ($(target).length) { return $(target); }
-          })
-        );
+        var t = [];
+        $(this.options.targets).each(function(){
+          t.push( $(this) );
+        });
+        this.targets   = t;
       }
  
       // store the current scrollTop or scrollLeft, depending on which orientation the user chose
-      this.scrollTop   = 0;
-      this.scrollLeft  = 0;
+      this.scrollTop    = 0;
+      this.scrollLeft   = 0;
 
       // store the current direction the user is scrolling. if downwards, then downwards=true
-      this.downwards   = null;
-      this.rightwards  = null;
+      this.downwards    = null;
+      this.rightwards   = null;
+       
+      this.max_width    = 0;
+      this.max_height   = 0;
 
-      this.increment   = $("body").height() / this.element.height()
-      
-      this.max_width   = 0;
-      this.max_height  = 0;
+      // this is the slowest an element will move in response to a window.scroll(), i.e., 1/100th of a pixel
+      this.min_modifier = 1;
+      this.max_modifier = 999;
 
-      
-      // figure out max width and height of body
-      // $("body > *").each(function(idx, el){
-      //   if ($(el).css("position")=="absolute") {
-      //     var x = parseInt($(el).css("left"))+parseInt($(el).width()),
-      //         y = parseInt($(el).css("top"))+parseInt($(el).height());
-      //     if (x > para.max_width)  { para.max_width = x;  }
-      //     if (y > para.max_height) { para.max_height = y; }
-      //   }
-      // });
+      this.scrolling    = false;
 
-      // console.log("max w & h", this.max_width, this.max_height);
+      // figure out highest and lowest z-index
+      para.max_z = 0;
+      $(para.targets).each(function(idx, target){        
+        var z = parseInt($(this).css("z-index"));
+        if (z >= para.max_z) { para.max_z = z; }  
+      });
 
-      // figure out highest z-index
-      para.max_z = 0, para.min_z = 0;
-      $.each(para.targets, function(idx, target){
-        var z = parseInt($(target).css("z-index"))
-        if (z >= para.max_z) { para.max_z = z; }
+      para.min_z = para.max_z;
+      $(para.targets).each(function(idx, target){
+        var z = parseInt($(this).css("z-index"));        
         if (z <= para.min_z) { para.min_z = z; }
       });
 
@@ -136,98 +130,187 @@
       $.each(para.targets, function(idx, target){
         $(target).each(function(){
           
-          var top  = $(this).position().top,
-              left = $(this).position().left,
-              mod  = para.calculate_modifier(parseInt($(this).css("z-index")));
+          var top    = $(this).position().top,
+              left   = $(this).position().left,
+              zindex = parseInt($(this).css("z-index")),
+              mod    = para._calculate_modifier(zindex);
           
-          para.orig_data.push([[ top, left, mod ]]);
+          para.target_data.push([ top, left, mod, zindex ]);
+          //console.log( [ top, left, zindex, mod ]);
 
           $(this).data({
             "parallax-orig-top"  : top,
             "parallax-orig-left" : left,
-            "parallax-modifier"  : mod
+            "parallax-modifier"  : mod,
+            "parallax-zindex"    : zindex
           });
+
+          if (mod==para.max_z) { $(this).css("position","fixed") }
 
         });
       });
 
-      console.log("DATA", this.orig_data);
-      
+      //console.log(para.targets);
+      //console.log(para.target_data);
+
+      if (this.options.ignore_hashes===false) {
+        // if the page has a hash, i.e., google.com/#results
+        this.scroll_target = this.check_address_bar();
+        if (this.scroll_target!==false) { para.scroll_to( this.scroll_target ); } 
+      }
 
       $(window).scroll(function(){
-        if (orientation=='horizontal') {
-          newScrollLeft = $(this).scrollLeft();
-          para.rightwards = (newScrollLeft > para.scrollLeft);
-          para.scrollLeft = newScrollLeft;
-          //para.element.css({left : (para.rightwards===true ? "-" : "") + newScrollLeft + "px"});          
+        var win   = $(this),
+          winTop  = win.scrollTop(),
+          winLeft = win.scrollLeft();
 
-        } else if (orientation=='vertical') {
-          newScrollTop = $(this).scrollTop();
-          para.downwards = (newScrollTop > para.scrollTop);
-          para.scrollTop = newScrollTop;
-          //para.element.css({top : (para.downwards===true ? "" : "-") + newScrollTop + "px"});
+        $.each(para.targets, function(idx, target){
+          para._move_by( idx, target, winTop, winLeft );
+        });
 
+      });
+      
+    },
+
+    // the lower the z-index value, the higher the modifier
+    _calculate_modifier : function( zindex ) {
+      
+      if (typeof(zindex)!=="number") { zindex=1; }
+      if (zindex > this.min_z) {
+        if (zindex < this.max_z) {
+          return this.max_z - zindex;
+        } else {
+          return this.min_z;
         }
-        
-        para.scroll_with_parallax();
-
-      });
-      
-    },
-
-    // the parallax modifier is the number we multiply the distance of each motion by,
-    // effectively slowing down the motion of each parallaxed object the further away from
-    // the foreground it is. "the foreground" is defined as the object that has the 
-    // highest z-index, and thus would return a modifier value of 1
-    calculate_modifier : function( zindex ) {
-      
-      if (typeof(zindex)!=="number") { zindex=0; }
-      console.log("zindex", zindex, this.min_z, this.max_z );
-      var normal_z = (zindex-this.min_z)/(this.max_z-this.min_z);
-      return (normal_z > 0.1 ? normal_z : 0.1);
+      } else {
+        return this.max_z;
+      }
 
     },
 
-    scroll_with_parallax : function() {
-      
-      var para = this,
-          scrollTop = $(window).scrollTop(),
-          scrollLeft = $(window).scrollLeft();
-      
-      $.each(this.targets, function(idx, el){
-        para.move_by( idx, $(el), scrollTop, scrollLeft );
-      });
+    // the higher a modifier is, the more pronounced the parallax effect is.
+    // the parallax effect is achieved by "slowing down" an element's movement
+    // across the screen as the window is scrolled. very distant objects 
+    // (with the greatest amount of parallax) will take a very long time to disappear,
+    // while the closest object (with the lowest parallax modifier of "1") 
+    // will be scrolled off-screen as normal.
+    _move_by : function( idx, el, winTop, winLeft ) {
 
-    },
+      var orig_top  = this.target_data[idx][0],
+          orig_left = this.target_data[idx][1],
+          mod       = this.target_data[idx][2],
+          zindex    = this.target_data[idx][3];
 
-    move_by : function( idx, el, scrollTop, scrollLeft ) {
+      if (this.orientation=='horizontal') {
 
-      var orig_top  = this.targets[idx][0],
-          orig_left = this.targets[idx][1],
-          mod       = this.targets[idx][2];
-          
-      if (this.options.orientation=='horizontal') {
-
-        var left = (scrollLeft - el.position().left) * el.data("parallax-modifier"), 
-          style  = left + "px";
-
+        // TODO 
         el.css({ left : style });
 
-      } else if (this.options.orientation=='vertical') {
-        
-        var top = (el.data("parallax-orig-top") - scrollTop) * el.data("parallax-modifier"),
-          style = top*-1 + "px";
-            
-        console.log( scrollTop, el.attr("class"), el.data("parallax-orig-top"), el.data("parallax-modifier"), style );
-        
-        el.css({ top : style }); 
+      } else if (this.orientation=='vertical') {
+
+        if (mod > 1 && el.css("position")!="fixed") {
+
+          var scrollBy = winTop * (mod/this.max_z),
+            newTop = orig_top + scrollBy;
+          
+          if (el.hasClass("sidebar")) console.log( newTop );
+          
+          el.queue([]);
+
+          if ( Math.abs(el.position().top - newTop) > 100 ) {
+            console.log('animating');
+            el.animate({ top : newTop }, { duration: 100, easing : "linear", queue : false });
+          } else {
+            el.css({ top : newTop });  
+          }
+
+        }
 
       }
       
     },
 
+    // the lowest z-index will require a scroll_to value of exactly what the window.scrollTop() would be
+    // the highest z-index will require half of what the window.scrollTop() would be
+    // so to compute everything in between those two, we just do a bit of algebra
+    scroll_to : function( target, add_hash ){
+      
+      var para     = this;
+
+      if (target!==undefined) {
+        para.scroll_target = target;
+      }
+
+      if (!para.is_valid_target( para.scroll_target )) {
+        return false;
+      }
+
+      var scroller = $("body"),
+          el       = $(para.scroll_target),
+          mod      = el.data("parallax-modifier"),
+          top      = el.data("parallax-orig-top"),
+          left     = el.data("parallax-orig-left");
+
+      if (para.orientation=='horizontal') {
+        scroller.animate({ 'scrollLeft' : left },{ duration : 500, complete : function(){
+            document.location.hash = para.scroll_target;
+          } 
+        });
+        
+      } else if (para.orientation=='vertical') {
+        scroller.animate({ 'scrollTop' : top },{ duration : 500, complete : function(){
+            document.location.hash = para.scroll_target;
+          }  
+        });
+
+      }
+
+    },
+
+    check_address_bar : function() {
+      
+      var hash = document.location.hash.replace("#","");
+      if (hash.length>0) {
+        if (this.is_valid_target("#"+hash)) {
+          return "#"+hash;
+        }
+      }
+      return false;
+
+    },
+
+    is_valid_target : function( el ) {
+
+      if ($(el).data("parallax-modifier")) {
+        return true;
+      } else {
+        return false;
+      }
+
+    },
+
+    _reset_to_orig : function() {
+     
+      $.each(this.targets, function(idx, el){
+        $(el).animate({
+          top : $(el).data("parallax-orig-top"),
+          left : $(el).data("parallax-orig-left")
+        },100);
+      });
+
+    },
+
     _destroy : function() {
       
+      $.each(this.targets, function(idx, el){
+        var elem = $(el);
+        elem.css({
+          top : elem.data("parallax-orig-top"),
+          left : elem.data("parallax-orig-left")
+        }).removeData("parallax-orig-top").
+        removeData("parallax-orig-left").
+        removeData("parallax-modifier");
+      });
 
     },
 

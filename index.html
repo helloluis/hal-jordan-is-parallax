@@ -8,40 +8,77 @@
 	
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="luis buenaventura (@helloluis), infinite.ly">
-	<script language="Javascript" src="javascripts/jquery.1.6.2.min.js"></script>
-	<script language="Javascript" src="javascripts/jquery.parallax.js"></script>
+	
 	<link rel="stylesheet" href="stylesheets/reset_h5bp.css">
 	<link rel="stylesheet" href="stylesheets/parallax_demo.css">
 	
 </head>
 <body>
 
-<div id="parallax" class="parallax">
+<div id="main" class="parallax" style="z-index:1">
+  
+  <div id="sidebar" class="parallax_target sidebar">
+    <h1 id="logo">Infinite.ly</h1>
+    <ul id="nav">
+      <li><a href="#slide_fan_page" class="bttn bttn_build" data-target="#slide_fan_page">Fan Page</a></li>
+      <li><a href="#slide_buzz" class="bttn bttn_buzz" data-target="#slide_buzz">Buzz</a></li>
+      <li><a href="#slide_analytics" class="bttn bttn_analytics" data-target="#slide_analytics">Trends</a></li>
+      <li><a href="#slide_sign_up" class="bttn bttn_sign_up" data-target="#slide_sign_up">Sign Up</a></li>
+    </ul>
+  </div>
+
+  <div class="parallax_target space"></div>
   <div class="parallax_target planet"></div>
-  <div class="parallax_target another_planet"></div>
+  <div class="parallax_target asteroid"></div>
+  <div class="parallax_target satellite"></div>
+  <div class="parallax_target planet2"></div>
+
+  <ul class="main_slides">
+    <li id="slide_fan_page" class="parallax_target main_slide">
+      <div class="inner"><h2>Build Your Universal Fan Page</h2>
+        <p>Create a fan page for your business or group that brings together all your activity from Twitter, Facebook, Flickr and Youtube.</p>
+        <ol class="slideshow slideshow_fan_page">
+          <li>slideshow frame 1</li>
+          <li>slideshow frame 2</li>
+          <li>slideshow frame 3</li>
+        </ol>
+      </div>
+    </li>
+    <li id="slide_buzz" class="parallax_target main_slide">
+      <div class="inner">
+        <h2>Talk to Your Audience</h2>
+        <p>Communicate directly with your market no matter which social network they're on, from one central place. Our aggregated address book lists every fan, follower, friend or contact across all your accounts.</p>
+        <ol class="slideshow slideshow_buzz">
+          <li>slideshow frame 1</li>
+          <li>slideshow frame 2</li>
+          <li>slideshow frame 3</li>
+        </ol>
+      </div>
+    </li>
+    <li id="slide_analytics" class="parallax_target main_slide">
+      <div class="inner">
+        <h2>Track the Trends</h2>
+        <p>Track all the mentions, reposts, comments and ratings that your social media content is generating. Monitor important buzz words and get a real-time view of what people are saying about them online.</p>
+        <ol class="slideshow slideshow_analytics">
+          <li>slideshow frame 1</li>
+          <li>slideshow frame 2</li>
+          <li>slideshow frame 3</li>
+        </ol>
+      </div>
+    </li>
+    <li id="slide_sign_up" class="parallax_target main_slide">
+      <div class="inner">
+        <h2>Sign Up for Free</h2>
+        <p>It's free, infinitely!</p>
+      </div>
+    </li>
+  </ul>
+  
 </div>
 
-<script>
+<script language="Javascript" src="javascripts/jquery.js"></script>
+<script language="Javascript" src="javascripts/jquery.parallax.js"></script>
+<script language="Javascript" src="javascripts/page.js"></script>
 
-// Behaviours for this Demo Page
-$(function(){
-  $("#parallax").parallax({
-    targets : [
-      ".satellite",
-      ".another_planet",
-      ".planet",
-      ".planetoid",
-      ".asteroid"
-    ]
-    // targets : [
-    //   [".satellite", 1],
-    //   [".another_planet", 2],
-    //   [".planet", 3],
-    //   [".planetoid", 4],
-    //   [".asteroid", 5]
-    // ]
-  });
-});
-</script>
 </body>
 </html>
