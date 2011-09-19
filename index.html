@@ -19,6 +19,12 @@
   
   <div id="sidebar" class="parallax_target sidebar">
     <h1 id="logo">Infinite.ly</h1>
+    <div id="scrollbar">
+      <div id="scrollbar-handle"></div>
+      <div id="scrollbar-track"></div>
+      <div id="scrollbar-track-start"></div>
+      <div id="scrollbar-track-end"></div>
+    </div>
     <ul id="nav">
       <li><a href="#slide_fan_page" class="bttn bttn_build" data-target="#slide_fan_page">Fan Page</a></li>
       <li><a href="#slide_buzz" class="bttn bttn_buzz" data-target="#slide_buzz">Buzz</a></li>
@@ -29,17 +35,12 @@
 
   <div class="parallax_target space"></div>
   <div class="parallax_target planet"></div>
-  <div class="parallax_target asteroid">
-    <!-- <img src="images/asteroid1.png" />
-    <img src="images/asteroid2.png" />
-    <img src="images/asteroid3.png" />
-    <img src="images/asteroid4.png" /> -->
-  </div>
+  <div class="parallax_target asteroid"></div>
   <div class="parallax_target satellite"></div>
   <div class="parallax_target planet2"></div>
 
   <ul class="main_slides">
-    <li id="slide_fan_page" class="parallax_target main_slide">
+    <li id="slide_fan_page" class="parallax_target main_slide" title="Fan Page">
       <div class="inner"><h2>Build Your Universal Fan Page</h2>
         <p>Create a fan page for your business or group that brings together all your activity from Twitter, Facebook, Flickr and Youtube.</p>
         <ol class="slideshow slideshow_fan_page">
@@ -49,7 +50,7 @@
         </ol>
       </div>
     </li>
-    <li id="slide_buzz" class="parallax_target main_slide">
+    <li id="slide_buzz" class="parallax_target main_slide" title="Buzz">
       <div class="inner">
         <h2>Talk to Your Audience</h2>
         <p>Communicate directly with your market no matter which social network they're on, from one central place. Our aggregated address book lists every fan, follower, friend or contact across all your accounts.</p>
@@ -60,7 +61,7 @@
         </ol>
       </div>
     </li>
-    <li id="slide_analytics" class="parallax_target main_slide">
+    <li id="slide_analytics" class="parallax_target main_slide" title="Trends">
       <div class="inner">
         <h2>Track the Trends</h2>
         <p>Track all the mentions, reposts, comments and ratings that your social media content is generating. Monitor important buzz words and get a real-time view of what people are saying about them online.</p>
@@ -71,7 +72,7 @@
         </ol>
       </div>
     </li>
-    <li id="slide_sign_up" class="parallax_target main_slide">
+    <li id="slide_sign_up" class="parallax_target main_slide" title="Sign Up">
       <div class="inner">
         <h2>Sign Up for Free</h2>
         <p>It's free, infinitely!</p>
@@ -82,6 +83,7 @@
 </div>
 
 <script language="Javascript" src="javascripts/jquery.js"></script>
+<script language="Javascript" src="javascripts/jquery-ui.min.js"></script>
 <script language="Javascript" src="javascripts/jquery.parallax.js"></script>
 <script language="Javascript" src="javascripts/page.js"></script>
 

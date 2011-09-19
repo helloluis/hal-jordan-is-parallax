@@ -1,6 +1,6 @@
 /*
 
-  jQuery Parallax v0.1.20110903
+  jQuery Parallax v0.1.20110919
   Full-page takeover alternative to jQuery UI's Dialog and/or various Lightbox-style plugins
 
   Licensed under the MIT license
