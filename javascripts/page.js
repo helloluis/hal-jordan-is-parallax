@@ -9,7 +9,7 @@ $(function(){
   		$(this).css("top", $(this).outerHeight()*idx );
   	});
 
-  $(".main_slides").height( slides.height()*slides.length );
+  $(".main_slides").height( slides.outerHeight()*slides.length );
 
   var main = $("#main").parallax({
     targets : ".parallax_target"

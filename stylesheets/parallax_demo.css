@@ -11,7 +11,7 @@ h1, h3 { margin-bottom:0px; }
 #nav { list-style-type:none; margin:0px; padding:0px; }
 #nav a { font-size:24px; }
 
-#main { position:absolute; top:0px; left:0px; width:100%; height:2000px; }
+#main { position:absolute; overflow:hidden; top:0px; left:0px; width:100%; height:2000px; }
 
 .main_slides { position:absolute; top:0px; left:0px; width:600px; margin:50px; padding:0px; overflow:hidden; }
 .main_slide { position:absolute; width:600px; height:500px; z-index:39; }

@@ -125,6 +125,9 @@
 
       console.log("z-index min & max", para.min_z, para.max_z);
 
+      // calculate the height of the element, based on the height of the nearest, tallest target
+      this._calculate_element_height();
+
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
       $.each(para.targets, function(idx, target){
@@ -136,7 +139,6 @@
               mod    = para._calculate_modifier(zindex);
           
           para.target_data.push([ top, left, mod, zindex ]);
-          //console.log( [ top, left, zindex, mod ]);
 
           $(this).data({
             "parallax-orig-top"  : top,
@@ -150,8 +152,8 @@
         });
       });
 
-      //console.log(para.targets);
-      //console.log(para.target_data);
+      // console.log(para.targets);
+      // console.log(para.target_data);
 
       if (this.options.ignore_hashes===false) {
         // if the page has a hash, i.e., google.com/#results
@@ -188,6 +190,20 @@
 
     },
 
+    _calculate_element_height : function( ) {
+      var tallest = 0;
+      for (var i=0; i < this.targets.length; i++) {
+        if (this.targets[i].css("z-index")==this.max_z) {
+          var h = this.targets[i].offset().top + this.targets[i].outerHeight();
+          if (tallest < h) {
+            tallest = h;
+          }
+        }
+      }
+      this.element.height( tallest );
+      return tallest;
+    },
+
     // the higher a modifier is, the more pronounced the parallax effect is.
     // the parallax effect is achieved by "slowing down" an element's movement
     // across the screen as the window is scrolled. very distant objects 
@@ -211,13 +227,12 @@
         if (mod > 1 && el.css("position")!="fixed") {
 
           var scrollBy = winTop * (mod/this.max_z),
-            newTop = orig_top + scrollBy;
+            newTop = orig_top + scrollBy,
+            dist   =  Math.abs(el.position().top - newTop);
           
-          if (el.hasClass("sidebar")) console.log( newTop );
-          
-          el.queue([]);
+          el.stop(true,false);
 
-          if ( Math.abs(el.position().top - newTop) > 100 ) {
+          if ( dist > 100 ) {
             console.log('animating');
             el.animate({ top : newTop }, { duration: 100, easing : "linear", queue : false });
           } else {
