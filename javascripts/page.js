@@ -20,8 +20,9 @@ function Scroller () {
       scr.heights.push( [ a, a.position().top, (a.position().top+a.height()) ] );
 
       a.click(function(){
-        scr.anchors.removeClass("selected");
-        a.addClass("selected");
+        scr.move_to( a );
+        //scr.anchors.removeClass("selected");
+        //a.addClass("selected");
       });
 
     });
@@ -48,20 +49,20 @@ function Scroller () {
       
       // scr.anchors.removeClass("selected");
         
-      var win    = $(this),
-        win_s    = win.scrollTop(),
-        win_h    = win.height(),
-        body_h   = $('body').height(),
-        track_h  = scr.track.height(),
-        target_h = scr.target_h;
+      // var win    = $(this),
+      //   win_s    = win.scrollTop(),
+      //   win_h    = win.height(),
+      //   body_h   = $('body').height(),
+      //   track_h  = scr.track.height(),
+      //   target_h = scr.target_h;
     
-      var new_t  = win_s * (track_h/(target_h - (win_h/2)));
+      // var new_t  = win_s * (track_h/(target_h - (win_h/2)));
       
-      console.log( new_t, win_s, track_h, target_h, win_h );
+      // console.log( new_t, win_s, track_h, target_h, win_h );
 
-      if (new_t > track_h) { new_t = track_h; }
+      // if (new_t > track_h) { new_t = track_h; }
 
-      scr.handle.css({ top : new_t });
+      // scr.handle.css({ top : new_t });
 
       // for (var i=0; i < scr.heights.length; i++) {
       //   if (new_t >= scr.heights[i][1] && new_t <= scr.heights[i][2]) {

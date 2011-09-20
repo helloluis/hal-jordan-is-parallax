@@ -80,6 +80,7 @@
       this.options     = $.extend( true, {}, $.Parallax.settings, options );
 
       var para         = this;
+      this.blocking    = false;
       this.orientation = this.options.orientation;
       this.target_data   = [];
 
@@ -123,7 +124,7 @@
         if (z <= para.min_z) { para.min_z = z; }
       });
 
-      console.log("z-index min & max", para.min_z, para.max_z);
+      //console.log("z-index min & max", para.min_z, para.max_z);
 
       // calculate the height of the element, based on the height of the nearest, tallest target
       this._calculate_element_height();
@@ -154,17 +155,16 @@
         });
       });
 
+      var manualScroll = function() {
+        
+      };
+
+
       $(window).scroll(function(){
-        //console.profile('moveby');
-        var win   = $(this),
-          winTop  = win.scrollTop(),
-          winLeft = win.scrollLeft();
-
-        $.each(para.targets, function(idx, target){
-          para._move_by( idx, target, winTop, winLeft );
-        });
-        //console.profileEnd('moveby');
-
+        if (para.blocking===false) {
+          console.log('firing manual scroll');
+          para._move_all($(this), true);   
+        }
       });
       
     },
@@ -200,13 +200,25 @@
       return tallest;
     },
 
+    _move_all : function( win, manual ) {
+
+      var para    = this,
+          winTop  = win.scrollTop(),
+          winLeft = win.scrollLeft();
+
+      $.each(para.targets, function(idx, target){
+        para._move_by( idx, target, winTop, winLeft, manual );
+      });
+
+    },
+
     // the higher a modifier is, the more pronounced the parallax effect is.
     // the parallax effect is achieved by "slowing down" an element's movement
     // across the screen as the window is scrolled. very distant objects 
     // (with the greatest amount of parallax) will take a very long time to disappear,
     // while the closest object (with the lowest parallax modifier of "1") 
     // will be scrolled off-screen as normal.
-    _move_by : function( idx, el, winTop, winLeft ) {
+    _move_by : function( idx, el, winTop, winLeft, manual ) {
 
       var orig_top  = this.target_data[idx][0],
           orig_left = this.target_data[idx][1],
@@ -214,8 +226,6 @@
           zindex    = this.target_data[idx][3],
           orig_w    = this.target_data[idx][4],
           orig_h    = this.target_data[idx][5];
-
-      //console.log('scrolling');
       
       if (this.orientation=='horizontal') {
 
@@ -224,18 +234,19 @@
 
       } else if (this.orientation=='vertical') {
 
-        if (mod > 1 && el.css("position")!="fixed") {
+        if (zindex > 1) {
 
           var scrollBy = winTop * (mod/this.max_z),
             newTop     = orig_top + scrollBy,
             dist       = Math.abs(el.position().top - newTop);
           
-          if (newTop + orig_h > this.max_y) { newTop = this.max_y - orig_h; }
+          // if (newTop + orig_h > this.max_y) { newTop = this.max_y - orig_h; }
+          // if (manual===true) { console.log(el.attr("class"), dist, newTop) }
 
           if ( dist > 100 ) {
             el.stop(true,false).animate({ top : newTop }, { duration: 100, easing : "linear", queue : false });
           } else if (dist > 1) {
-            el.stop(true,false).css({ top : newTop });  
+            el.stop(true,false).css({ top : newTop });
           }
 
         }
@@ -267,22 +278,32 @@
           top      = el.data("parallax-orig-top"),
           left     = el.data("parallax-orig-left");
       
+      para.blocking = true;
+
       //if (document.location.hash!=para.scroll_target) {
         if (para.orientation=='horizontal') {
           scroller.animate({ 'scrollLeft' : left },{ 
-            duration : 500, 
+            duration : 500,
+            easing   : "swing", 
             complete : function(){
               document.location.hash = para.scroll_target;
+              para.blocking = false;
             } 
           });
           
         } else if (para.orientation=='vertical') {
           scroller.animate({ 'scrollTop' : top },{ 
             duration : 500, 
+            easing   : "swing",
             complete : function(){
               document.location.hash = para.scroll_target;
+              para.blocking = false;
+              para._move_all( $(window) );
             }  
           });
+
+          //console.log('firing automatic scroll');
+          
 
         }
       //}
