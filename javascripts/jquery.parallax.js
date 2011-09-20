@@ -233,7 +233,7 @@
           el.stop(true,false);
 
           if ( dist > 100 ) {
-            console.log('animating');
+            //console.log('animating');
             el.animate({ top : newTop }, { duration: 100, easing : "linear", queue : false });
           } else {
             el.css({ top : newTop });  
@@ -260,26 +260,33 @@
         return false;
       }
 
+      console.log("scrolling to " + para.scroll_target);
+
       var scroller = $("body"),
           el       = $(para.scroll_target),
           mod      = el.data("parallax-modifier"),
           top      = el.data("parallax-orig-top"),
           left     = el.data("parallax-orig-left");
+      
+      //if (document.location.hash!=para.scroll_target) {
+        if (para.orientation=='horizontal') {
+          scroller.animate({ 'scrollLeft' : left },{ 
+            duration : 500, 
+            complete : function(){
+              document.location.hash = para.scroll_target;
+            } 
+          });
+          
+        } else if (para.orientation=='vertical') {
+          scroller.animate({ 'scrollTop' : top },{ 
+            duration : 500, 
+            complete : function(){
+              document.location.hash = para.scroll_target;
+            }  
+          });
 
-      if (para.orientation=='horizontal') {
-        scroller.animate({ 'scrollLeft' : left },{ duration : 500, complete : function(){
-            document.location.hash = para.scroll_target;
-          } 
-        });
-        
-      } else if (para.orientation=='vertical') {
-        scroller.animate({ 'scrollTop' : top },{ duration : 500, complete : function(){
-            document.location.hash = para.scroll_target;
-          }  
-        });
-
-      }
-
+        }
+      //}
     },
 
     check_address_bar : function() {

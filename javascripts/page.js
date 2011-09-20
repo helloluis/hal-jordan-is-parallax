@@ -1,64 +1,102 @@
+function Scroller (target) {
+  
+  this.scrolling  = false;
 
-function setupScroller( target ) {
-	
-	var target = $(target),
-		handle   = $("#scrollbar-handle"), 
-		track    = $("#scrollbar-track"),
-		heights  = [];
+  this.initialize = function(target) {
 
-	$("a",target).click(function(){
-		var a = $(this);
-		var t = a.position().top + ( (a.height() - handle.height()) /2 );
-		console.log(t);
-		a.siblings().removeClass("selected");
-		a.addClass("selected");
-		handle.animate({ top : t });
-	}).each(function(){
-		var a = $(this);
-		heights.push( [ a, a.position().top, (a.position().top+a.height()) ] );
-	});
+    this.target   = $(target);
+    this.handle   = $("#scrollbar-handle");
+    this.track    = $("#scrollbar-track");
+    this.heights  = [];
+    this.anchors  = $("a", target);
 
-	var grid_y = Math.round(target.height() / target.children().length);
-	
-	console.log(heights);
+    var scr = this;
+  
+    scr.anchors.each(function(){
 
-	handle.draggable({
-		grid : [0, grid_y ],
-		axis : 'y',
-		containment : 'parent',
-		stop : function() {
-			var handle_pos = $(this).position().top;
-			for (var i=0; i < heights.length; i++) {
-				if (handle_pos >= heights[i][1] && handle_pos <= heights[i][2]) {
-					heights[i][0].click();
-				}
-			}
-		}
-	});
+      var a = $(this);
+      scr.heights.push( [ a, a.position().top, (a.position().top+a.height()) ] );
 
+      a.click(function(){
+        scr.move_to( a );
+      });
+
+    });
+
+    var grid_y = Math.round(scr.target.height()/scr.target.children().length);
+    
+    console.log(scr.heights);
+
+    scr.handle.draggable({
+      grid : [0, grid_y ],
+      axis : 'y',
+      containment : 'parent',
+      stop : function() {
+        var handle_pos = $(this).position().top;
+        for (var i=0; i < scr.heights.length; i++) {
+          if (handle_pos >= scr.heights[i][1] && handle_pos <= scr.heights[i][2]) {
+            scr.heights[i][0].click();
+          }
+        }
+      }
+    });
+
+    $(window).scroll(function(){
+      if (document.location.hash.length>1) {
+        var hash = document.location.hash.replace("#","");
+        scr.move_to( $("a[href='#" + hash + "']", scr.target) );
+      }
+    });
+  };
+
+  this.move_to = function( a ) {
+    
+    var scr = this;
+
+    if (scr.scrolling===false) {
+
+        scr.scrolling = true;
+        var t = a.position().top + ( (a.height()-scr.handle.height())/2 );
+
+        scr.anchors.removeClass("selected");
+        a.addClass("selected");
+        
+        scr.handle.stop(true,true).animate({ top : t }, { 
+          duration : 500, 
+          complete : function(){
+            scr.scrolling = false;
+          }
+        });
+      }
+
+  }
 }
 
 
 $(function(){
 	
-	var slides = $(".main_slide");
+  var slides 	    = $(".main_slide"), 
+  	slides_list   = $(".main_slides"),
+  	parallax_cont = $("#main"),
+  	anchors       = $(".bttn"),
+    scroller      = new Scroller;
 
-  slides.
-  	each(function(idx, elem){
-  		$(this).css("top", $(this).outerHeight()*idx );
-  	});
-
-  $(".main_slides").height( slides.outerHeight()*slides.length );
-
-  var main = $("#main").parallax({
-    targets : ".parallax_target"
+  slides.each(function(idx){
+  	$(this).css("top", $(this).outerHeight()*idx );
   });
 
-  $(".bttn").click(function(){
-    main.parallax("scroll_to", $(this).attr("data-target"), true);
+  slides_list.height( slides.outerHeight()*slides.length );
+
+  parallax_cont.parallax({ targets : ".parallax_target" });
+
+  anchors.click(function(){
+    parallax_cont.parallax("scroll_to", $(this).attr("href"), true);
     return false;
   });
 
-  setupScroller("#nav");
+  scroller.initialize("#nav");
+
+  // this is for IE compatibility
+  $("body").height( parallax_cont.outerHeight() );
 
 });
