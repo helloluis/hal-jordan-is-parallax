@@ -1,14 +1,16 @@
-function Scroller (target) {
+function Scroller () {
   
   this.scrolling  = false;
 
-  this.initialize = function(target) {
+  this.initialize = function(nav, target) {
 
+    this.nav      = $(nav);
     this.target   = $(target);
     this.handle   = $("#scrollbar-handle");
     this.track    = $("#scrollbar-track");
     this.heights  = [];
-    this.anchors  = $("a", target);
+    this.anchors  = $("a", nav);
+
 
     var scr = this;
   
@@ -23,7 +25,7 @@ function Scroller (target) {
 
     });
 
-    var grid_y = Math.round(scr.target.height()/scr.target.children().length);
+    var grid_y = Math.round(scr.nav.height()/scr.nav.children().length);
     
     console.log(scr.heights);
 
@@ -42,10 +44,10 @@ function Scroller (target) {
     });
 
     $(window).scroll(function(){
-      if (document.location.hash.length>1) {
-        var hash = document.location.hash.replace("#","");
-        scr.move_to( $("a[href='#" + hash + "']", scr.target) );
-      }
+      // if (document.location.hash.length>1) {
+      //   var hash = document.location.hash.replace("#","");
+      //   scr.move_to( $("a[href='#" + hash + "']", scr.nav) );
+      // }
     });
   };
 
@@ -60,7 +62,7 @@ function Scroller (target) {
 
         scr.anchors.removeClass("selected");
         a.addClass("selected");
-        
+
         scr.handle.stop(true,true).animate({ top : t }, { 
           duration : 500, 
           complete : function(){
@@ -94,7 +96,11 @@ $(function(){
     return false;
   });
 
-  scroller.initialize("#nav");
+  scroller.initialize("#nav", ".main_slides");
+
+  if (document.location.hash.length>1) {
+    $(".bttn_" + document.location.hash.replace("#","")).click();
+  }
 
   // this is for IE compatibility
   $("body").height( parallax_cont.outerHeight() );

@@ -152,16 +152,8 @@
         });
       });
 
-      // console.log(para.targets);
-      // console.log(para.target_data);
-
-      if (this.options.ignore_hashes===false) {
-        // if the page has a hash, i.e., google.com/#results
-        this.scroll_target = this.check_address_bar();
-        if (this.scroll_target!==false) { para.scroll_to( this.scroll_target ); } 
-      }
-
       $(window).scroll(function(){
+        console.profile('moveby');
         var win   = $(this),
           winTop  = win.scrollTop(),
           winLeft = win.scrollLeft();
@@ -169,6 +161,7 @@
         $.each(para.targets, function(idx, target){
           para._move_by( idx, target, winTop, winLeft );
         });
+        console.profileEnd('moveby');
 
       });
       
@@ -217,6 +210,8 @@
           mod       = this.target_data[idx][2],
           zindex    = this.target_data[idx][3];
 
+      //console.log('scrolling');
+      
       if (this.orientation=='horizontal') {
 
         // TODO 
@@ -227,8 +222,8 @@
         if (mod > 1 && el.css("position")!="fixed") {
 
           var scrollBy = winTop * (mod/this.max_z),
-            newTop = orig_top + scrollBy,
-            dist   =  Math.abs(el.position().top - newTop);
+            newTop     = orig_top + scrollBy,
+            dist       = Math.abs(el.position().top - newTop);
           
           el.stop(true,false);
 
@@ -287,18 +282,6 @@
 
         }
       //}
-    },
-
-    check_address_bar : function() {
-      
-      var hash = document.location.hash.replace("#","");
-      if (hash.length>0) {
-        if (this.is_valid_target("#"+hash)) {
-          return "#"+hash;
-        }
-      }
-      return false;
-
     },
 
     is_valid_target : function( el ) {
