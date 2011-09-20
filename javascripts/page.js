@@ -29,19 +29,19 @@ function Scroller () {
     
     console.log(scr.heights);
 
-    scr.handle.draggable({
-      grid : [0, grid_y ],
-      axis : 'y',
-      containment : 'parent',
-      stop : function() {
-        var handle_pos = $(this).position().top;
-        for (var i=0; i < scr.heights.length; i++) {
-          if (handle_pos >= scr.heights[i][1] && handle_pos <= scr.heights[i][2]) {
-            scr.heights[i][0].click();
-          }
-        }
-      }
-    });
+    // scr.handle.draggable({
+    //   grid : [0, grid_y ],
+    //   axis : 'y',
+    //   containment : 'parent',
+    //   stop : function() {
+    //     var handle_pos = $(this).position().top;
+    //     for (var i=0; i < scr.heights.length; i++) {
+    //       if (handle_pos >= scr.heights[i][1] && handle_pos <= scr.heights[i][2]) {
+    //         scr.heights[i][0].click();
+    //       }
+    //     }
+    //   }
+    // });
 
     $(window).scroll(function(){
       // if (document.location.hash.length>1) {

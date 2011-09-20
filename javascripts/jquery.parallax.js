@@ -136,9 +136,11 @@
           var top    = $(this).position().top,
               left   = $(this).position().left,
               zindex = parseInt($(this).css("z-index")),
-              mod    = para._calculate_modifier(zindex);
+              mod    = para._calculate_modifier(zindex),
+              width  = $(this).outerWidth(),
+              height = $(this).outerHeight();
           
-          para.target_data.push([ top, left, mod, zindex ]);
+          para.target_data.push([ top, left, mod, zindex, width, height ]);
 
           $(this).data({
             "parallax-orig-top"  : top,
@@ -194,6 +196,7 @@
         }
       }
       this.element.height( tallest );
+      this.max_y = tallest;
       return tallest;
     },
 
@@ -208,7 +211,9 @@
       var orig_top  = this.target_data[idx][0],
           orig_left = this.target_data[idx][1],
           mod       = this.target_data[idx][2],
-          zindex    = this.target_data[idx][3];
+          zindex    = this.target_data[idx][3],
+          orig_w    = this.target_data[idx][4],
+          orig_h    = this.target_data[idx][5];
 
       //console.log('scrolling');
       
@@ -225,13 +230,12 @@
             newTop     = orig_top + scrollBy,
             dist       = Math.abs(el.position().top - newTop);
           
-          el.stop(true,false);
+          if (newTop + orig_h > this.max_y) { newTop = this.max_y - orig_h; }
 
           if ( dist > 100 ) {
-            //console.log('animating');
-            el.animate({ top : newTop }, { duration: 100, easing : "linear", queue : false });
-          } else {
-            el.css({ top : newTop });  
+            el.stop(true,false).animate({ top : newTop }, { duration: 100, easing : "linear", queue : false });
+          } else if (dist > 1) {
+            el.stop(true,false).css({ top : newTop });  
           }
 
         }
