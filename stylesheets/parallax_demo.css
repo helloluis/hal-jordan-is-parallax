@@ -8,12 +8,13 @@ h2 { color:#fff; font-size:36px; }
 h3 { color:#fff; font-weight:normal }
 h1, h3 { margin-bottom:0px; }
 
-#sidebar { position:absolute; top:50px; left:670px; z-index:2; width:180px; padding:20px; height:800px; background:#000; overflow:hidden; } 
+#sidebar { position:fixed; top:50px; left:670px; z-index:40; width:180px; padding:20px; height:800px; background:transparent; overflow:hidden; } 
 
 #nav { list-style-type:none; margin:0px; padding:0px; position:absolute; left:50px; top:180px;}
-#nav a { font-size:18px; font-weight:normal; }
-#nav a.selected { color:#fff; }
-#nav li { margin-bottom:10px; }
+#nav a { font-size:14px; font-weight:normal; text-decoration:none; }
+#nav a:hover { text-shadow:0px 0px 5px #ddb; }
+#nav a.selected { color:#fff; text-shadow:0px 0px 5px #fff; }
+#nav li { margin-bottom:20px; }
 #header { position:fixed; top:0; width:100%; background:rgba(0,0,0,0.5); height:65px; z-index:99;}
 #main { position:absolute; overflow:hidden; top:0px; left:0px; width:100%; height:2000px; }
 
@@ -35,7 +36,7 @@ h1, h3 { margin-bottom:0px; }
 
 /* scroller css */
 #scrollbar { width:20px; height:120px; position:absolute; top:180px; left:20px; }
-#scrollbar-handle { width:10px; height:10px; border-radius:10px; background:#fff; position:absolute; top:5px; left:5px; z-index:3; }
-#scrollbar-track { width:2px; height:105px; position:absolute; top:6px; left:9px; z-index:2; background:#444; }
-#scrollbar-track-start, #scrollbar-track-end { width:8px; height:8px; position:absolute; border-radius:8px; position:absolute; top:6px; left:6px; z-index:2; background:#444; }
-#scrollbar-track-end { top:103px; }
+#scrollbar-handle { width:10px; height:10px; border-radius:10px; background:#fff; position:absolute; top:5px; left:5px; z-index:3; box-shadow:0px 0px 5px #fff; }
+#scrollbar-track { width:2px; height:115px; position:absolute; top:6px; left:9px; z-index:2; background:#000; box-shadow:0px 0px 5px #000; }
+#scrollbar-track-start, #scrollbar-track-end { width:8px; height:8px; position:absolute; border-radius:8px; position:absolute; top:4px; left:6px; z-index:2; background:#000; box-shadow:0px 0px 5px #000; }
+#scrollbar-track-end { top:113px; }

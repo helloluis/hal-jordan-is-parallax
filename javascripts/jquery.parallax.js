@@ -153,7 +153,7 @@
       });
 
       $(window).scroll(function(){
-        console.profile('moveby');
+        //console.profile('moveby');
         var win   = $(this),
           winTop  = win.scrollTop(),
           winLeft = win.scrollLeft();
@@ -161,7 +161,7 @@
         $.each(para.targets, function(idx, target){
           para._move_by( idx, target, winTop, winLeft );
         });
-        console.profileEnd('moveby');
+        //console.profileEnd('moveby');
 
       });
       
