@@ -76,13 +76,13 @@
     
     _create : function( options ) {
       
-
       this.options     = $.extend( true, {}, $.Parallax.settings, options );
 
       var para         = this;
+      this.scrolled    = false;
       this.blocking    = false;
       this.orientation = this.options.orientation;
-      this.target_data   = [];
+      this.target_data = [];
 
       if (this.options.targets.length===0) {
         this.targets   = this.element.children();
@@ -109,7 +109,6 @@
       this.min_modifier = 1;
       this.max_modifier = 999;
 
-      this.scrolling    = false;
 
       // figure out highest and lowest z-index
       para.max_z = 0;
@@ -155,17 +154,11 @@
         });
       });
 
-      var manualScroll = function() {
-        
-      };
-
-
-      $(window).scroll(function(){
-        if (para.blocking===false) {
-          console.log('firing manual scroll');
-          para._move_all($(this), true);   
-        }
-      });
+      var manualScroll = function(){
+        para._move_all($(this));
+      }
+      
+      $(window).scroll(manualScroll);
       
     },
 
@@ -200,6 +193,8 @@
       return tallest;
     },
 
+    // iterates through all our targets and moves them by a specific amount,
+    // dependent on their respective stored modifiers
     _move_all : function( win, manual ) {
 
       var para    = this,
@@ -229,25 +224,21 @@
       
       if (this.orientation=='horizontal') {
 
-        // TODO 
-        el.css({ left : style });
+        if (mod != this.max_z) {
+          var scrollBy = winLeft * (mod/this.max_z),
+              newLeft  = orig_left + scrollBy;
+
+          el.css({ left : newLeft });
+        }
 
       } else if (this.orientation=='vertical') {
 
-        if (zindex > 1) {
+        if (mod != this.max_z) {
 
           var scrollBy = winTop * (mod/this.max_z),
-            newTop     = orig_top + scrollBy,
-            dist       = Math.abs(el.position().top - newTop);
+            newTop     = orig_top + scrollBy;
           
-          // if (newTop + orig_h > this.max_y) { newTop = this.max_y - orig_h; }
-          // if (manual===true) { console.log(el.attr("class"), dist, newTop) }
-
-          if ( dist > 100 ) {
-            el.stop(true,false).animate({ top : newTop }, { duration: 100, easing : "linear", queue : false });
-          } else if (dist > 1) {
-            el.stop(true,false).css({ top : newTop });
-          }
+          el.css({ top : newTop });
 
         }
 
@@ -266,11 +257,11 @@
         para.scroll_target = target;
       }
 
+      console.log("scrolling to " + para.scroll_target);
+
       if (!para.is_valid_target( para.scroll_target )) {
         return false;
       }
-
-      console.log("scrolling to " + para.scroll_target);
 
       var scroller = $("body"),
           el       = $(para.scroll_target),
@@ -278,35 +269,27 @@
           top      = el.data("parallax-orig-top"),
           left     = el.data("parallax-orig-left");
       
-      para.blocking = true;
+      if (para.orientation=='horizontal') {
+        scroller.animate({ 'scrollLeft' : left },{ 
+          duration : 500,
+          easing   : "swing", 
+          complete : function(){
+            document.location.hash = "/" + para.scroll_target.replace("#","");
+          } 
+        });
+        
+      } else if (para.orientation=='vertical') {
+        scroller.animate({ 'scrollTop' : top },{ 
+          duration : 500, 
+          easing   : "swing",
+          complete : function(){
+            document.location.hash = "/" + para.scroll_target.replace("#","");
+          }  
+        });
 
-      //if (document.location.hash!=para.scroll_target) {
-        if (para.orientation=='horizontal') {
-          scroller.animate({ 'scrollLeft' : left },{ 
-            duration : 500,
-            easing   : "swing", 
-            complete : function(){
-              document.location.hash = para.scroll_target;
-              para.blocking = false;
-            } 
-          });
-          
-        } else if (para.orientation=='vertical') {
-          scroller.animate({ 'scrollTop' : top },{ 
-            duration : 500, 
-            easing   : "swing",
-            complete : function(){
-              document.location.hash = para.scroll_target;
-              para.blocking = false;
-              para._move_all( $(window) );
-            }  
-          });
+        console.log('firing automatic scroll');
 
-          //console.log('firing automatic scroll');
-          
-
-        }
-      //}
+      }
     },
 
     is_valid_target : function( el ) {
