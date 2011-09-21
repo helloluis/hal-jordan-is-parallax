@@ -51,7 +51,7 @@ function Scroller () {
       scr.handle.css({ top : adjusted });
     };
 
-    $(window).scroll( $.throttle(100, track_scrolling) );
+    $(window).scroll( $.throttle(150, track_scrolling) );
 
   };
 

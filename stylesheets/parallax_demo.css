@@ -1,42 +1,71 @@
-body { background:#000; overflow:hidden; }
-p { margin:0px 0px 5px 0px; font-size:13px; color:#ffc; display:inline; }
-a, a:visited, a:active { color:#9E905B; font-weight:bold }
+body { background:#000; font-family: "Lucida Grande", Arial, "sans serif";}
+p { margin:0px 0px 5px 0px; font-size:12px; color:#fff; display:inline; }
+a, a:visited, a:active { color:#9E905B; font-weight:bold; text-decoration: none; }
 a:hover { color:#beb07B; }
-h1 { background:#000 url(../images/logo.png) no-repeat; margin:0 auto; text-indent: -9999px; }
-h1 a {  display: block; height: 142px; width:188px;}
-h2 { color:#fff; font-size:36px; }
+h1 { background: transparent url(../images/logo.png) no-repeat;  text-indent: -9999px; float: left; margin: 1px 1% 0 1%;  opacity: 0.9; }
+h1:hover { opacity:1;}
+h1 a {  display: block; height: 48px; width:188px; }
+h2 { font-size:170%; letter-spacing:-1px; color: #f90;  font-weight: normal !important; text-shadow: 0 -1px 5px #000; }
 h3 { color:#fff; font-weight:normal }
 h1, h3 { margin-bottom:0px; }
 
-#sidebar { position:fixed; top:50px; left:670px; z-index:40; width:180px; padding:20px; height:800px; background:transparent; overflow:hidden; } 
+#header {position:fixed; top:0; width:100%; min-height:49px; z-index:99; margin: 0 auto;  }
+.header { margin: 0 auto; width: 98%; height: 49px;   border-radius:0 0 0 6px; background: rgba(0,0,0,0.8); }
+#header .social { float: left; width: 200px; margin-top : 10px;}
+#header .social_icons { background: transparent url(../images/social.png) no-repeat; text-indent: -9999px; width:23px; display: block; float: left; margin-right: 10px; padding-top: 8px;}
+#header .social_icons.twitter { background-position: -2px -2px !important; }
+#header .social_icons.facebook { background-position: -37px -2px !important; }
+#header .social_icons.twitter:hover { background-position: -2px -30px !important; }
+#header .social_icons.facebook:hover { background-position: -37px -30px !important; }
+#header .social_icons.twitter:active { background-position: -2px -56px !important; }
+#header .social_icons.facebook:active { background-position: -37px -56px !important; }
+#header .login {  width:auto; height: 48px; float: left; background: rgba(0,0,0,0.4); }
+#footer { position: relative; display: none;}
 
-#nav { list-style-type:none; margin:0px; padding:0px; position:absolute; left:50px; top:180px;}
+#sidebar { position:fixed; top:0px; left:720px; z-index:40; width:180px; padding:20px; height:600px; background:transparent; overflow:hidden; } 
+#nav { list-style-type:none; margin:0px; padding:0px; position:absolute; left:50px; top:174px;}
 #nav a { font-size:14px; font-weight:normal; text-decoration:none; }
 #nav a:hover { text-shadow:0px 0px 5px #ddb; }
 #nav a.selected { color:#fff; text-shadow:0px 0px 5px #fff; }
 #nav li { margin-bottom:20px; }
+
 #header { position:fixed; top:0; width:100%; background:rgba(0,0,0,0.5); height:65px; z-index:99;}
 #main { position:absolute; overflow:hidden; top:0px; left:0px; width:100%; height:2000px; margin-bottom:100px; }
 
-.main_slides { position:absolute; top:0px; left:0px; width:600px; margin:50px; padding:0px; overflow:hidden; }
+#nav .bttn { background: transparent url(../images/nav.png) no-repeat; text-indent: -9999px; width:95px; display: block; float: left; margin-right: 10px; padding-top: 14px; }
+#nav .bttn.bttn_fan_page { background-position: -3px -5px !important; }
+	#nav .bttn.bttn_fan_page:hover { background-position: -98px -5px !important; }
+	#nav .bttn.bttn_fan_page:active, #nav .bttn.bttn_fan_page.selected  { background-position: -197px -5px !important; }
+#nav .bttn.bttn_buzz { background-position: -3px -47px !important; }
+	#nav .bttn.bttn_buzz:hover { background-position: -97px -47px !important; }
+	#nav .bttn.bttn_buzz:active, #nav .bttn.bttn_buzz.selected  { background-position: -197px -47px !important; }
+#nav .bttn.bttn_analytics { background-position: -3px -90px !important; }
+	#nav .bttn.bttn_analytics:hover { background-position: -97px -90px !important; }
+	#nav .bttn.bttn_analytics:active, #nav .bttn.bttn_analytics.selected  { background-position: -197px -90px !important; }
+#nav .bttn.bttn_sign_up { background-position: -3px -130px !important; }
+	#nav .bttn.bttn_sign_up:hover { background-position: -97px -130px !important; }
+	#nav .bttn.bttn_sign_up:active, #nav .bttn.bttn_sign_up.selected  { background-position: -197px -130px !important; }
+
+#main { position:absolute; overflow:hidden; top:0px; left:0px; width:100%; height:2000px; }
+.main_slides { position:absolute; top:0px; left:0px; width:600px; margin:100px 50px 50px 100px; padding:0px; overflow:hidden;}
 .main_slide { position:absolute; width:600px; height:500px; z-index:39; }
-.main_slide .inner { padding:20px 20px 0px 20px; margin-bottom:20px; width:560px; height:460px; border-radius:20px; background:rgba(0,0,0,0.5); }
+.main_slide .inner { padding:20px 20px 0px 20px; margin-bottom:20px; width:560px; height:460px; border-radius:6px; background:rgba(0,0,0,0.5); }
 
 .slideshow { width:500px; height:300px; background:#777; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; }
 .parallax_target { position:absolute; }
 
-.space { position:absolute; width:100%; height:2000px; z-index:1; background:#000 url(../images/bg.jpg) 50% 0 no-repeat;}
-.planet { z-index:15; top:0px; left:-150px; width:652px; height:627px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; }
-.planet2 {z-index:15; top:1000px; left:350px; width:1028px; height:648px; background:transparent url(../images/new_planet.png) 0 0 no-repeat}
-.asteroids { z-index:5; top:600px; left:450px; width:780px; height:487px; background:transparent url(../images/new_asteroids.png) no-repeat; overflow:hidden; }
-.asteroids2 { z-index:5; top:500px; left:0px; width:780px; height:487px; background:transparent url(../images/new_asteroids2.png) no-repeat; overflow:hidden; }
+.space { position:absolute; width:100%; height:2000px; z-index:1; background:#000 url(../images/bg.jpg) 50% -120px no-repeat;}
+.planet2 { z-index:15; top:0px; left:-150px; width:652px; height:627px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; }
+.planet {z-index:4; top:300px; left:600px; width:1028px; height:648px; background:transparent url(../images/new_planet.png) 0 0 no-repeat}
+.asteroids { z-index:8; top:300px; left:400px; width:780px; height:487px; background:transparent url(../images/new_asteroids.png) no-repeat; overflow:hidden; }
+.asteroids2 { z-index:8; top:200px; left:0px; width:780px; height:487px; background:transparent url(../images/new_asteroids2.png) no-repeat; overflow:hidden; }
 .asteroids img { float:right; }
 .stardust { z-index:2; top:250px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust.png) 0 0 no-repeat; }
 
 
 /* scroller css */
-#scrollbar { width:20px; height:120px; position:absolute; top:180px; left:20px; }
-#scrollbar-handle { width:10px; height:10px; border-radius:10px; background:#fff; position:absolute; top:5px; left:5px; z-index:3; box-shadow:0px 0px 5px #fff; }
-#scrollbar-track { width:2px; height:115px; position:absolute; top:6px; left:9px; z-index:2; background:#000; box-shadow:0px 0px 5px #444; }
+#scrollbar { width:20px; height:100px; position:absolute; top:181px; left:20px; }
+#scrollbar-handle {  width:10px; height:10px; border-radius:10px; background: transparent url(../images/scrollhandle.png) -4px -3px no-repeat ; position:absolute; top:5px; left:5px; z-index:3; cursor: pointer; }
+#scrollbar-track { width:2px; height:100px; position:absolute; top:6px; left:9px; z-index:2; background:#000; box-shadow:0px 0px 5px #444; }
 #scrollbar-track-start, #scrollbar-track-end { width:8px; height:8px; position:absolute; border-radius:8px; position:absolute; top:4px; left:6px; z-index:2; background:#000; box-shadow:0px 0px 5px #444; }
-#scrollbar-track-end { top:113px; }
+#scrollbar-track-end { top:100px; }
