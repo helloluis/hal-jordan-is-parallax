@@ -63,9 +63,10 @@
   
   
   $.Parallax.settings = {
-    orientation     : "vertical",
-    ignore_hashes   : false,
-    targets         : []
+    orientation          : "vertical",
+    ignore_hashes        : false,
+    background_position  : false,
+    targets              : []
   };
   
   $.Parallax.prototype = {
@@ -123,6 +124,17 @@
         if (z <= para.min_z) { para.min_z = z; }
       });
 
+      var resizeBg = function() {
+        para.max_width = $('body').width() > $(window).width() ? $('body').width() : $(window).width();
+        para.max_height = $('body').height() > $(window).height() ? $('body').height() : $(window).height();
+        if (para.options.background_position===true) {
+          $.each(para.targets, function(idx, target){
+            $(this).width( para.max_width ).height( para.max_height );
+          });
+        }
+      };
+
+      resizeBg();
       //console.log("z-index min & max", para.min_z, para.max_z);
 
       // calculate the height of the element, based on the height of the nearest, tallest target
@@ -149,6 +161,8 @@
             "parallax-zindex"    : zindex
           });
 
+          
+
           if (mod==para.max_z) { $(this).css("position","fixed") }
 
         });
@@ -156,9 +170,10 @@
 
       var manualScroll = function(){
         para._move_all($(this));
-      }
+      };
+
       
-      $(window).scroll(manualScroll);
+      $(window).scroll(manualScroll).smartresize(resizeBg);
       
     },
 

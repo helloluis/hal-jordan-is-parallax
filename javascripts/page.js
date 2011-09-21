@@ -170,7 +170,7 @@ $(function(){
   // this is manually set
   $("body").height( parallax_cont.outerHeight() + parseInt(parallax_cont.css("margin-bottom")) );
 
-  parallax_cont.parallax({ targets : ".parallax_target" });
+  parallax_cont.parallax({ targets : ".parallax_target", background_position : true });
 
   anchors.click(function(){
     parallax_cont.parallax("scroll_to", $(this).attr("href").replace(/[\/]+/gi,""), true);
@@ -182,5 +182,22 @@ $(function(){
   if (document.location.hash.length>1) {
     $(".bttn_" + document.location.hash.replace("#","")).click();
   }
+
+  var positionSlidesAndNav = function() {
+    var slides = $(".main_slides"), nav = $("#sidebar"), win_w = $(window).width(), slides_w = slides.outerWidth(), nav_w = nav.outerWidth();
+    if (win_w > slides_w + nav_w) {
+      var left = (win_w - (slides_w+nav_w+50))/2;
+      slides.css("left", left);
+      nav.css("left", left + slides_w + 50);
+    } else {
+      slides.css("left", "0px");
+      nav.css("left", slides_w + 50);
+    }
+  }
+
+  positionSlidesAndNav();
+
+  $(window).smartresize( positionSlidesAndNav );
+
 
 });
