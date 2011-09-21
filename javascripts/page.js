@@ -21,7 +21,7 @@ function Scroller () {
     this.calculate_hotspots();
 
     console.log(scr.hotspots);
-
+    console.log(scr.target_h);
     // var grid_y = Math.round(scr.nav.height()/scr.nav.children().length);
     // scr.handle.draggable({
     //   grid : [0, grid_y ],
@@ -142,10 +142,11 @@ function Scroller () {
 
   this.calculate_targetable_height = function() {
     
-    var slide = $(".main_slide", this.target),
-      targetable_h = $('body').height() - $(window).height();
-      //targetable_h = (((slide.outerHeight() + parseInt(slide.css('margin-bottom'))) * (slide.length-1)) + 
-      //       (slide.outerHeight() - $(".slideshow").height())) - $(slide.get(0)).offset().top ;
+    var slide = $(".main_slide", this.target), targetable_h = 1170;
+      // targetable_h = $('body').height() - $(window).height() - $(".main_slides").offset().top;
+      // targetable_h = (((slide.outerHeight() + parseInt(slide.css('margin-bottom'))) * (slide.length-1)) + 
+      //        (slide.outerHeight() - $(".slideshow").height())) - $(slide.get(0)).offset().top ;
+      
     // console.log(targetable_h);    
     return targetable_h;
 
