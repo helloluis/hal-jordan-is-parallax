@@ -68,8 +68,8 @@
     background_position  : false,
     lowest_z             : false,
     highest_z            : false,
-    max_width            : false,
-    max_height           : false,
+    force_width          : false,
+    force_height         : false,
     targets              : []
   };
   
@@ -129,9 +129,11 @@
       // store the current direction the user is scrolling. if downwards, then downwards=true
       this.downwards    = null;
       this.rightwards   = null;
-       
-      this.max_width    = this.options.max_width;
-      this.max_height   = this.options.max_height;
+      
+      this.max_width    = 0;
+      this.max_height   = 0; 
+      this.force_width  = this.options.force_width;
+      this.force_height = this.options.force_height;
 
       // this is the slowest an element will move in response to a window.scroll(), i.e., 1/100th of a pixel
       this.min_modifier = 1;
@@ -149,14 +151,20 @@
         if (z <= para.min_z) { para.min_z = z; }
       });
 
+      
       var resizeBg = function() {
-        if (!para.max_width) {
+        if (!para.force_width) {
           para.max_width  = $('body').width() > $(window).width() ? $('body').width() : $(window).width();  
+        } else {
+          para.max_width = para.force_width;
         }
-        if (!para.max_height) {
+
+        if (!para.force_height) {
           para.max_height = $('body').height() > $(window).height() ? $('body').height() : $(window).height();  
+        } else {
+          para.max_height = para.force_height;
         }
-        
+
         if (para.options.background_position===true) {
           $.each(para.targets, function(idx, target){
             $(this).width( para.max_width ).height( para.max_height );

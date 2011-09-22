@@ -23,7 +23,6 @@ function SpaceScroller () {
     var scr = this;
     
     scr.calculate_hotspots();
-    console.log(scr.hotspots);
 
     var track_scrolling = function(){
       if (scr.automated===false) {
@@ -88,8 +87,7 @@ function SpaceScroller () {
     
     var scr = this,    
           t = a.position().top - (scr.handle_h/2) + scr.track_t;
-    
-    console.log( t );
+
     if (t < 0) { t = 0; }
 
     scr.handle.animate({ top : t }, 200, function(){
@@ -126,7 +124,6 @@ function SpaceScroller () {
     
     var slide = $(".main_slide", this.target), 
       targetable_h = (slide.outerHeight()+parseInt(slide.css('margin-bottom'))) * slide.length - ($(window).height());
-    console.log(targetable_h);
     return targetable_h;
 
   };
@@ -146,7 +143,7 @@ $(function(){
     targets    : ".parallax_target", 
     highest_z  : 80, 
     lowest_z   : 1, 
-    max_height : 3000 
+    force_height : 3000 
   });
 
   scroller.initialize("#nav", ".main_slide");

@@ -50,7 +50,7 @@ h1, h3 { margin-bottom:0px; }
 .parallax_target { position:absolute; }
 
 .space { position:absolute; width:100%; height:2000px; z-index:1; background:#000 url(../images/bg.jpg) 50% -120px no-repeat; left:0; }
-.planet2 { z-index:7; top:0px; left:-150px; width:652px; height:627px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; }
+.planet2 { z-index:10; top:0px; left:-150px; width:652px; height:627px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; }
 .planet {z-index:4; top:300px; left:600px; width:1028px; height:648px; background:transparent url(../images/new_planet.png) 0 0 no-repeat}
 .asteroids { z-index:30; top:300px; left:400px; width:780px; height:487px; background:transparent url(../images/new_asteroids.png) no-repeat; overflow:hidden; }
 .asteroids2 { z-index:30; top:200px; left:0px; width:780px; height:487px; background:transparent url(../images/new_asteroids2.png) no-repeat; overflow:hidden; }
@@ -59,7 +59,7 @@ h1, h3 { margin-bottom:0px; }
 
 .bg { width:100%; height:100%; background-position: 0% 0%; top:0px !important; left:0px !important; }
 .planet2.bg { background-position: -150px 400px; }
-.planet.bg { background-position: 600px 500px; }
+.planet.bg { background-position: 600px 300px; }
 .asteroids.bg { background-position: 500px 400px; }
 .asteroids2.bg { background-position: -50px 500px; }
 .stardust.bg { background-position: -100px 350px; }
