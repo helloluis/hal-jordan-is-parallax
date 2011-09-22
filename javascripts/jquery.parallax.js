@@ -66,6 +66,10 @@
     orientation          : "vertical",
     ignore_hashes        : false,
     background_position  : false,
+    lowest_z             : false,
+    highest_z            : false,
+    force_width          : false,
+    force_height         : false,
     targets              : []
   };
   
@@ -77,22 +81,45 @@
     
     _create : function( options ) {
       
-      this.options     = $.extend( true, {}, $.Parallax.settings, options );
+      this.options      = $.extend( true, {}, $.Parallax.settings, options );
 
-      var para         = this;
-      this.scrolled    = false;
-      this.blocking    = false;
-      this.orientation = this.options.orientation;
-      this.target_data = [];
+      var para          = this;
+
+      this.scrolled     = false;
+      this.blocking     = false;
+      
+      this.background_position = this.options.background_position;
+      // boolean
+      // there are two techniques that we can use to achieve parallax. the first is to just have a bunch of absolutely-positioned
+      // elements all over the place, with varying z-indexes. we move these elements in varying speeds to achieve parallax.
+      // the other technique, is to use background-position. (to activate this, we set the background_position option to true.)
+      // using this strategy, all parallaxed elements are stretched so that they cover the entirety of the body/window (whichever
+      // happens to be larger), and the parallax visual effect is achieved by adjusting the background-position-x/y attribute of
+      // each element as the user scrolls.
+
+      this.orientation  = this.options.orientation;
+      // 'vertical' or 'horizontal'
+      
+      this.highest_z    = this.options.highest_z;
+      this.lowest_z     = this.options.lowest_z;
+      // integer
+      // the difference between min_z/max_z and lowest_z/highest_z is that the former is the largest z-index that we can find amongst
+      // our possible target elements, whereas the latter is a user-defined, purely arbitrary value. highest_z is useful
+      // for defining extreme differences in depth between the parallaxed elements and the foreground. so for example,
+      // if all your parallaxed elements had z-indexes in the range of 5-10, and you set a highest_z of 99, there would be
+      // a very pronounced difference in speed between your background elements and your foreground. without a highest_z value,
+      // the speed variance would be pretty shallow, because the max_z would only be 10, in this case.
+
+      this.target_data  = [];
 
       if (this.options.targets.length===0) {
-        this.targets   = this.element.children();
+        this.targets    = this.element.children();
       } else {
         var t = [];
         $(this.options.targets).each(function(){
           t.push( $(this) );
         });
-        this.targets   = t;
+        this.targets    = t;
       }
  
       // store the current scrollTop or scrollLeft, depending on which orientation the user chose
@@ -102,16 +129,16 @@
       // store the current direction the user is scrolling. if downwards, then downwards=true
       this.downwards    = null;
       this.rightwards   = null;
-       
+      
       this.max_width    = 0;
-      this.max_height   = 0;
+      this.max_height   = 0; 
+      this.force_width  = this.options.force_width;
+      this.force_height = this.options.force_height;
 
       // this is the slowest an element will move in response to a window.scroll(), i.e., 1/100th of a pixel
       this.min_modifier = 1;
       this.max_modifier = 999;
 
-
-      // figure out highest and lowest z-index
       para.max_z = 0;
       $(para.targets).each(function(idx, target){        
         var z = parseInt($(this).css("z-index"));
@@ -124,9 +151,20 @@
         if (z <= para.min_z) { para.min_z = z; }
       });
 
+      
       var resizeBg = function() {
-        para.max_width = $('body').width() > $(window).width() ? $('body').width() : $(window).width();
-        para.max_height = $('body').height() > $(window).height() ? $('body').height() : $(window).height();
+        if (!para.force_width) {
+          para.max_width  = $('body').width() > $(window).width() ? $('body').width() : $(window).width();  
+        } else {
+          para.max_width = para.force_width;
+        }
+
+        if (!para.force_height) {
+          para.max_height = $('body').height() > $(window).height() ? $('body').height() : $(window).height();  
+        } else {
+          para.max_height = para.force_height;
+        }
+
         if (para.options.background_position===true) {
           $.each(para.targets, function(idx, target){
             $(this).width( para.max_width ).height( para.max_height );
@@ -135,35 +173,37 @@
       };
 
       resizeBg();
-      //console.log("z-index min & max", para.min_z, para.max_z);
+
+      para.element.height( para.max_height );
+
+      // console.log(this.target_data);
+      // console.log("z-index min & max", para.min_z, para.max_z);
 
       // calculate the height of the element, based on the height of the nearest, tallest target
-      this._calculate_element_height();
+      // this._calculate_element_height();
 
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
       $.each(para.targets, function(idx, target){
         $(target).each(function(){
-          
-          var top    = $(this).position().top,
-              left   = $(this).position().left,
-              zindex = parseInt($(this).css("z-index")),
+          var tgt    = $(this),
+              top    = para.background_position===false ? tgt.position().top  : parseInt(tgt.css("background-position-y")),
+              left   = para.background_position===false ? tgt.position().left : parseInt(tgt.css("background-position-x")),
+              zindex = parseInt(tgt.css("z-index")),
               mod    = para._calculate_modifier(zindex),
-              width  = $(this).outerWidth(),
-              height = $(this).outerHeight();
+              width  = tgt.outerWidth(),
+              height = tgt.outerHeight();
           
           para.target_data.push([ top, left, mod, zindex, width, height ]);
 
-          $(this).data({
+          tgt.data({
             "parallax-orig-top"  : top,
             "parallax-orig-left" : left,
             "parallax-modifier"  : mod,
             "parallax-zindex"    : zindex
           });
 
-          
-
-          if (mod==para.max_z) { $(this).css("position","fixed") }
+          if (mod==para.max_z) { tgt.css("position","fixed") }
 
         });
       });
@@ -172,8 +212,11 @@
         para._move_all($(this));
       };
 
-      
-      $(window).scroll(manualScroll).smartresize(resizeBg);
+      // both the throttled manualScroll and the (debounced) smartresize do similarly limited actions
+      // manualScroll only fires every 50ms, while resizeBg fires after 100ms has passed
+      // this is to ensure that the browser doesn't go nuts triggering scroll() and resize() events
+      // over and over again with very little actual effect on the layout
+      $(window).scroll( manualScroll ).smartresize( resizeBg );
       
     },
 
@@ -181,28 +224,33 @@
     _calculate_modifier : function( zindex ) {
       
       if (typeof(zindex)!=="number") { zindex=1; }
-      if (zindex > this.min_z) {
-        if (zindex < this.max_z) {
-          return this.max_z - zindex;
+      
+      var min = (this.lowest_z ? this.lowest_z : this.min_z);
+      var max = (this.highest_z ? this.highest_z : this.max_z);
+
+      if (zindex > min) {
+        if (zindex < max) {
+          return max - zindex;
         } else {
-          return this.min_z;
+          return min;
         }
       } else {
-        return this.max_z;
+        return max;
       }
 
     },
 
     _calculate_element_height : function( ) {
+
       var tallest = 0;
-      for (var i=0; i < this.targets.length; i++) {
-        if (this.targets[i].css("z-index")==this.max_z) {
-          var h = this.targets[i].offset().top + this.targets[i].outerHeight();
-          if (tallest < h) {
-            tallest = h;
-          }
-        }
-      }
+      // for (var i=0; i < this.targets.length; i++) {
+      //   if (this.targets[i].css("z-index")==this.max_z) {
+      //     var h = this.targets[i].offset().top + this.targets[i].outerHeight();
+      //     if (tallest < h) {
+      //       tallest = h;
+      //     }
+      //   }
+      // }
       this.element.height( tallest );
       this.max_y = tallest;
       return tallest;
@@ -235,25 +283,29 @@
           mod       = this.target_data[idx][2],
           zindex    = this.target_data[idx][3],
           orig_w    = this.target_data[idx][4],
-          orig_h    = this.target_data[idx][5];
+          orig_h    = this.target_data[idx][5],
+          min_z     = this.lowest_z ? this.lowest_z : this.min_z,
+          max_z     = this.highest_z ? this.highest_z : this.max_z;
       
       if (this.orientation=='horizontal') {
 
-        if (mod != this.max_z) {
-          var scrollBy = winLeft * (mod/this.max_z),
-              newLeft  = orig_left + scrollBy;
+        if (mod != max_z) {
+          var css_attrib = this.background_position===true ? 'background-position-x' : 'left',
+                scrollBy = winLeft * (mod/max_z),
+                newLeft  = orig_left + scrollBy;
 
-          el.css({ left : newLeft });
+          el.css(css_attrib, newLeft);
         }
 
       } else if (this.orientation=='vertical') {
 
-        if (mod != this.max_z) {
+        if (mod != max_z) {
 
-          var scrollBy = winTop * (mod/this.max_z),
-            newTop     = orig_top + scrollBy;
-          
-          el.css({ top : newTop });
+          var css_attrib = this.background_position===true ? 'background-position-y' : 'top',
+                scrollBy = winTop * (mod/max_z),
+                newTop   = orig_top + scrollBy;
+          // console.log(css_attrib, newTop);
+          el.css(css_attrib, newTop);
 
         }
 
@@ -270,13 +322,13 @@
 
       if (target!==undefined) {
         para.scroll_target = target;
-      }
-
-      console.log("scrolling to " + para.scroll_target);
+      }      
 
       if (!para.is_valid_target( para.scroll_target )) {
         return false;
       }
+
+      console.log("scrolling to " + para.scroll_target);
 
       var scroller = $("body"),
           el       = $(para.scroll_target),
