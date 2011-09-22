@@ -89,7 +89,7 @@ function SpaceScroller () {
           t = a.position().top - scr.handle_h + scr.track_t;
 
     if (t < 0) { t = 0; }
-    console.log(t);
+    //console.log(t);
     scr.handle.animate({ top : t }, 200, function(){
       scr.automated = false;
     });
@@ -159,15 +159,17 @@ $(function(){
 
   var positionSlidesAndNav = function() {
 
-    var slides   = $(".main_slides"), 
-           nav   = $("#sidebar"), 
-           win_w = $(window).width(), 
-           slides_w = slides.outerWidth(), 
-           nav_w = nav.outerWidth();
+    var slides    = $(".main_slides"), 
+         nav      = $("#sidebar"), 
+         win_w    = $(window).width(), 
+         slides_w = slides.outerWidth(), 
+         nav_w    = nav.outerWidth(),
+         footer   = $("#footer");
 
     if (win_w > slides_w + nav_w) {
       var left = (win_w - (slides_w+nav_w+50))/2;
       slides.css("left", left);
+      footer.css("left", left);
       nav.css("left", left + slides_w + 50);
     } else {
       slides.css("left", "0px");

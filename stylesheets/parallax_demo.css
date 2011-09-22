@@ -18,7 +18,7 @@ h1, h3 { margin-bottom:0px; }
 
 #sidebar { position:fixed; top:0px; /*left:720px;*/ right:10%; z-index:40; width:180px; padding:20px; height:600px; background:transparent; overflow:hidden; } 
 #nav { list-style-type:none; margin:0px; padding:0px; position:absolute; left:50px; top:174px; }
-#nav a { font-size:120%; font-weight:normal; text-decoration:none; font-family: 'Puritan', sans-serif; text-shadow:0px 0px 5px #000; }
+#nav a { font-size:110%; font-weight:normal; text-decoration:none; font-family: 'Puritan', sans-serif; text-shadow:0px 0px 5px #000; }
 #nav a:hover { color:#fff; text-shadow:0px 0px 5px #f90; }
 #nav a.selected { color:#fff; text-shadow:0px 0px 5px #f90; }
 #nav li { margin-bottom:20px; }
@@ -57,20 +57,20 @@ h1, h3 { margin-bottom:0px; }
 .asteroids { z-index:30; top:600px; left:400px; width:650px; height:319px; background:transparent url(../images/new_asteroids.png) no-repeat; overflow:hidden; }
 .asteroids2 { z-index:30; top:200px; left:0px; width:500px; height:417px; background:transparent url(../images/new_asteroids2.png) no-repeat; overflow:hidden; }
 .asteroids img { float:right; }
-.stardust { z-index:2; top:250px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust.png) 0 0 no-repeat; }
+.stardust { z-index:2; top:150px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust.png) 0 0 no-repeat; }
 
 .bg { width:100%; height:100%; background-position: 0% 0%; top:0px !important; left:0px !important; }
 .planet2.bg { background-position: -150px 400px; }
 .planet.bg { background-position: 600px 300px; }
 .asteroids.bg { background-position: 500px 400px; }
 .asteroids2.bg { background-position: -50px 500px; }
-.stardust.bg { background-position: -100px 350px; }
+.stardust.bg { background-position: -100px 200px; }
 .space.bg { position:fixed; }
 
-#footer { position: relative; display: none;}
-#footer .social { float: left; width: 200px; margin-top : 10px;}
-#footer .social_icons { background: transparent url(../images/social.png) no-repeat; text-indent: -9999px; width:23px; display: block; float: left; margin-right: 10px; padding-top: 8px;}
-#footer .social_icons.twitter { background-position: -2px -2px !important; }
+#footer { position:absolute; top:3000px; background: transparent url(../images/earth.png) 0px 50px no-repeat; width:960px; height:150px; z-index:100; }
+#footer .social { margin:20px auto; width: 80px; height:25px; }
+#footer .social_icons { background: transparent url(../images/social.png) no-repeat; text-indent: -9999px; width:25px; display: block; float: left; margin-right: 10px; padding-top: 8px;}
+#footer .social_icons.twitter { background-position: -2px -2px !important; margin-left:10px; }
 #footer .social_icons.facebook { background-position: -37px -2px !important; }
 #footer .social_icons.twitter:hover { background-position: -2px -30px !important; }
 #footer .social_icons.facebook:hover { background-position: -37px -30px !important; }
