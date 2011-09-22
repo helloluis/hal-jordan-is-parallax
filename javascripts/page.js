@@ -6,7 +6,7 @@ function SpaceScroller () {
  
     this.nav       = $(nav);
     this.targets   = $(targets);
-    this.scroller  = $('body');
+    this.scroller  = ($.browser.mozilla || $.browser.msie) ? $('html') : $('body');
     this.handle    = $("#scrollbar-handle");
     this.track     = $("#scrollbar-track");
     this.hotspots  = [];
@@ -30,7 +30,11 @@ function SpaceScroller () {
           win_s = win.scrollTop();
       
         var adjusted  = ((win_s * (scr.track_h/scr.target_h)) - scr.handle_h) + scr.track_t;
-        if (adjusted < 0) { adjusted = 0; }
+        if (adjusted < 0) { 
+          adjusted = 0; 
+        } else if (adjusted > scr.track_h) {
+          adjusted = scr.track_h;
+        }
 
         scr.handle.css({ top : adjusted });
 
@@ -145,6 +149,8 @@ $(function(){
     lowest_z   : 1, 
     force_height : 3000 
   });
+  //$(".planet").plaxify({ 'xRange':40,'yRange':200});
+
 
   scroller.initialize("#nav", ".main_slide");
 

@@ -209,15 +209,18 @@
         para._move_all($(this));
       };
 
-      // ($.browser.mozilla || $.browser.msie) ? $('html') : $('body');
+      
       // $.Window.bind('scroll', function(e){});
 
       // both the throttled manualScroll and the (debounced) smartresize do similarly limited actions
       // manualScroll only fires every 50ms, while resizeBg fires after 100ms has passed
       // this is to ensure that the browser doesn't go nuts triggering scroll() and resize() events
       // over and over again with very little actual effect on the layout
-      $(window).bind('scroll', manualScroll); // .smartresize( resizeBg );
-      // TODO: try doing this without the jquery object, and see if we can do things any faster
+
+      // $(window).scroll($.debounce(40,manualScroll)).smartresize( resizeBg );
+      // $(window).scroll( $.throttle(40,manualScroll) );
+      $(window).scroll( manualScroll );
+
     },
 
     // the lower the z-index value, the higher the modifier
@@ -240,36 +243,20 @@
 
     },
 
-    _calculate_element_height : function( ) {
-
-      var tallest = 0;
-      // for (var i=0; i < this.targets.length; i++) {
-      //   if (this.targets[i].css("z-index")==this.max_z) {
-      //     var h = this.targets[i].offset().top + this.targets[i].outerHeight();
-      //     if (tallest < h) {
-      //       tallest = h;
-      //     }
-      //   }
-      // }
-      this.element.height( tallest );
-      this.max_y = tallest;
-      return tallest;
-    },
-
     // iterates through all our targets and moves them by a specific amount,
     // dependent on their respective stored modifiers
     _move_all : function( win ) {
 
-      var para    = this,
-          winTop  = win.scrollTop(),
-          winLeft = win.scrollLeft(),
+      var para     = this,
+          win_top  = win.scrollTop(),
+          win_left = win.scrollLeft(),
           css_attrib = this.orientation == 'horizontal' ? 
             (this.background_position===true ? 'background-position-x' : 'left') :
             (this.background_position===true ? 'background-position-y' : 'top');
 
-      $.each(para.targets, function(idx, target){
-        para._move_by( idx, target, winTop, winLeft, css_attrib );
-      });
+      for (var i=0; i < para.targets.length; i+=1) {
+        para._move_by( i, para.targets[i], win_top, win_left, css_attrib );
+      }
 
     },
 
@@ -279,7 +266,7 @@
     // (with the greatest amount of parallax) will take a very long time to disappear,
     // while the closest object (with the lowest parallax modifier of "1") 
     // will be scrolled off-screen as normal.
-    _move_by : function( idx, el, winTop, winLeft, css_attrib ) {
+    _move_by : function( idx, el, win_top, win_left, css_attrib ) {
 
       var orig_top  = this.target_data[idx][0],
           orig_left = this.target_data[idx][1],
@@ -289,13 +276,14 @@
       if (this.orientation=='horizontal') {
 
         if (mod != max_z) {
-          el.css(css_attrib, orig_left + (winLeft * (mod/max_z)));
+          el.css(css_attrib, orig_left + (win_left * (mod/max_z)));
         }
 
       } else if (this.orientation=='vertical') {
 
         if (mod != max_z) {
-          el.css(css_attrib, orig_top + (winTop * (mod/max_z)));
+          //console.log(orig_top + (win_top * (mod/max_z)), el.position().top);
+          el.css(css_attrib, orig_top + (win_top * (mod/max_z)));
         }
 
       }
