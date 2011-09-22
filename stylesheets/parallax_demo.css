@@ -60,7 +60,7 @@ h1, h3 { margin-bottom:0px; }
 .stardust { z-index:2; top:150px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust.png) 0 0 no-repeat; }
 
 .bg { width:100%; height:100%; background-position: 0% 0%; top:0px !important; left:0px !important; }
-.planet2.bg { background-position: -150px 400px; }
+.planet2.bg { background-position: -50px 800px; }
 .planet.bg { background-position: 600px 300px; }
 .asteroids.bg { background-position: 500px 700px; }
 .asteroids2.bg { background-position: -50px 800px; }
