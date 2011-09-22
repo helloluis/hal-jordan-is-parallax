@@ -9,7 +9,7 @@ h2 { font-size:170%; letter-spacing:-1px; color: #f90;  font-weight: normal !imp
 h3 { color:#fff; font-weight:normal }
 h1, h3 { margin-bottom:0px; }
 
-#header {position:fixed; top:0; width:100%; min-height:49px; z-index:99; margin: 0 auto;  }
+#header {position:fixed; top:0; width:960px; min-height:49px; z-index:99; margin: 0 auto;  }
 .header { margin: 0 auto; width: 98%; height: 49px;   border-radius:0 0 0 6px; background: rgba(0,0,0,0.8); }
 #header .social { float: left; width: 200px; margin-top : 10px;}
 #header .social_icons { background: transparent url(../images/social.png) no-repeat; text-indent: -9999px; width:23px; display: block; float: left; margin-right: 10px; padding-top: 8px;}
@@ -43,7 +43,7 @@ h1, h3 { margin-bottom:0px; }
 	#nav .bttn.bttn_sign_up:active, #nav .bttn.bttn_sign_up.selected  { background-position: -197px -130px !important; }
 
 
-#main { position:absolute; overflow:hidden; top:0px; left:0px; width:100%; height:2000px; }
+#main { top:0px; left:0px; width:960px; height:2000px; margin:0 auto;}
 .main_slides { position:absolute; top:0px; left:0px; width:600px; margin:100px 50px 50px 100px; padding:0px; overflow:hidden;}
 .main_slide { position:absolute; width:600px; height:500px; z-index:39; }
 .main_slide .inner { padding:20px 20px 0px 20px; margin-bottom:20px; width:560px; height:460px; border-radius:6px; background:rgba(0,0,0,0.5); }
@@ -52,10 +52,10 @@ h1, h3 { margin-bottom:0px; }
 .parallax_target { position:absolute; }
 
 .space { position:absolute; width:100%; height:2000px; z-index:1; background:#000 url(../images/bg.jpg) 50% -120px no-repeat;}
-.planet2 { z-index:15; top:0px; left:-150px; width:652px; height:627px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; }
-.planet {z-index:4; top:300px; left:600px; width:1028px; height:648px; background:transparent url(../images/new_planet.png) 0 0 no-repeat}
-.asteroids { z-index:8; top:300px; left:400px; width:780px; height:487px; background:transparent url(../images/new_asteroids.png) no-repeat; overflow:hidden; }
-.asteroids2 { z-index:8; top:200px; left:0px; width:780px; height:487px; background:transparent url(../images/new_asteroids2.png) no-repeat; overflow:hidden; }
+.planet2 { z-index:15; top:300px; left:-150px; width:652px; height:627px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; }
+.planet {z-index:4; top:500px; left:600px; width:1028px; height:648px; background:transparent url(../images/new_planet.png) 0 0 no-repeat}
+.asteroids { z-index:8; top:500px; left:400px; width:780px; height:487px; background:transparent url(../images/new_asteroids.png) no-repeat; overflow:hidden; }
+.asteroids2 { z-index:8; top:400px; left:0px; width:780px; height:487px; background:transparent url(../images/new_asteroids2.png) no-repeat; overflow:hidden; }
 .asteroids img { float:right; }
 .stardust { z-index:2; top:250px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust.png) 0 0 no-repeat; }
 
