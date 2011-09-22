@@ -29,7 +29,7 @@ function SpaceScroller () {
         var win = $(this),
           win_s = win.scrollTop();
       
-        var adjusted  = ((win_s * (scr.track_h/scr.target_h)) - (scr.handle_h/2)) + scr.track_t;
+        var adjusted  = ((win_s * (scr.track_h/scr.target_h)) - scr.handle_h) + scr.track_t;
         if (adjusted < 0) { adjusted = 0; }
 
         scr.handle.css({ top : adjusted });
@@ -73,7 +73,7 @@ function SpaceScroller () {
     pos = (pos + scr.handle_h) - scr.track_t;
     
     for (var i=0; i<this.hotspots.length; i++) {
-      if (pos >= this.hotspots[i].at && pos <= this.hotspots[i].at + this.hotspots[i].ah) {
+      if (pos >= (this.hotspots[i].at - scr.handle_h) && pos <= this.hotspots[i].at + this.hotspots[i].ah) {
         return i;
         break;
       }
@@ -86,10 +86,10 @@ function SpaceScroller () {
   this.move_to = function( a ) {
     
     var scr = this,    
-          t = a.position().top - (scr.handle_h/2) + scr.track_t;
+          t = a.position().top - scr.handle_h + scr.track_t;
 
     if (t < 0) { t = 0; }
-
+    console.log(t);
     scr.handle.animate({ top : t }, 200, function(){
       scr.automated = false;
     });
