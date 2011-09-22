@@ -179,9 +179,6 @@
       // console.log(this.target_data);
       // console.log("z-index min & max", para.min_z, para.max_z);
 
-      // calculate the height of the element, based on the height of the nearest, tallest target
-      // this._calculate_element_height();
-
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
       $.each(para.targets, function(idx, target){
@@ -212,12 +209,15 @@
         para._move_all($(this));
       };
 
+      // ($.browser.mozilla || $.browser.msie) ? $('html') : $('body');
+      // $.Window.bind('scroll', function(e){});
+
       // both the throttled manualScroll and the (debounced) smartresize do similarly limited actions
       // manualScroll only fires every 50ms, while resizeBg fires after 100ms has passed
       // this is to ensure that the browser doesn't go nuts triggering scroll() and resize() events
       // over and over again with very little actual effect on the layout
-      $(window).scroll( manualScroll ).smartresize( resizeBg );
-      
+      $(window).bind('scroll', manualScroll); // .smartresize( resizeBg );
+      // TODO: try doing this without the jquery object, and see if we can do things any faster
     },
 
     // the lower the z-index value, the higher the modifier
@@ -258,14 +258,17 @@
 
     // iterates through all our targets and moves them by a specific amount,
     // dependent on their respective stored modifiers
-    _move_all : function( win, manual ) {
+    _move_all : function( win ) {
 
       var para    = this,
           winTop  = win.scrollTop(),
-          winLeft = win.scrollLeft();
+          winLeft = win.scrollLeft(),
+          css_attrib = this.orientation == 'horizontal' ? 
+            (this.background_position===true ? 'background-position-x' : 'left') :
+            (this.background_position===true ? 'background-position-y' : 'top');
 
       $.each(para.targets, function(idx, target){
-        para._move_by( idx, target, winTop, winLeft, manual );
+        para._move_by( idx, target, winTop, winLeft, css_attrib );
       });
 
     },
@@ -276,37 +279,23 @@
     // (with the greatest amount of parallax) will take a very long time to disappear,
     // while the closest object (with the lowest parallax modifier of "1") 
     // will be scrolled off-screen as normal.
-    _move_by : function( idx, el, winTop, winLeft, manual ) {
+    _move_by : function( idx, el, winTop, winLeft, css_attrib ) {
 
       var orig_top  = this.target_data[idx][0],
           orig_left = this.target_data[idx][1],
           mod       = this.target_data[idx][2],
-          zindex    = this.target_data[idx][3],
-          orig_w    = this.target_data[idx][4],
-          orig_h    = this.target_data[idx][5],
-          min_z     = this.lowest_z ? this.lowest_z : this.min_z,
           max_z     = this.highest_z ? this.highest_z : this.max_z;
       
       if (this.orientation=='horizontal') {
 
         if (mod != max_z) {
-          var css_attrib = this.background_position===true ? 'background-position-x' : 'left',
-                scrollBy = winLeft * (mod/max_z),
-                newLeft  = orig_left + scrollBy;
-
-          el.css(css_attrib, newLeft);
+          el.css(css_attrib, orig_left + (winLeft * (mod/max_z)));
         }
 
       } else if (this.orientation=='vertical') {
 
         if (mod != max_z) {
-
-          var css_attrib = this.background_position===true ? 'background-position-y' : 'top',
-                scrollBy = winTop * (mod/max_z),
-                newTop   = orig_top + scrollBy;
-          // console.log(css_attrib, newTop);
-          el.css(css_attrib, newTop);
-
+          el.css(css_attrib, orig_top + (winTop * (mod/max_z)));
         }
 
       }
@@ -328,7 +317,7 @@
         return false;
       }
 
-      console.log("scrolling to " + para.scroll_target);
+      //console.log("scrolling to " + para.scroll_target);
 
       var scroller = $("body"),
           el       = $(para.scroll_target),
@@ -354,7 +343,7 @@
           }  
         });
 
-        console.log('firing automatic scroll');
+        //console.log('firing automatic scroll');
 
       }
     },
