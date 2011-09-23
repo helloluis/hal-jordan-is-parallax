@@ -143,14 +143,11 @@ $(function(){
     scroller      = new SpaceScroller;
   
   parallax_cont.parallax({ 
-    background_position : true, 
     targets    : ".parallax_target", 
-    highest_z  : 80, 
+    highest_z  : 99, 
     lowest_z   : 1, 
     force_height : 3000 
   });
-  //$(".planet").plaxify({ 'xRange':40,'yRange':200});
-
 
   scroller.initialize("#nav", ".main_slide");
 
@@ -186,7 +183,12 @@ $(function(){
 
   positionSlidesAndNav();
 
-  $(window).smartresize( positionSlidesAndNav );
+  if ($.browser.firefox) {
+    $(window).resize( positionSlidesAndNav );
+  } else {
+    $(window).smartresize( positionSlidesAndNav );
+  }
+  
 
 
 });

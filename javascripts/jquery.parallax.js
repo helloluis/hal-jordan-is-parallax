@@ -65,7 +65,6 @@
   $.Parallax.settings = {
     orientation          : "vertical",
     ignore_hashes        : false,
-    background_position  : false,
     lowest_z             : false,
     highest_z            : false,
     force_width          : false,
@@ -88,15 +87,6 @@
       this.scrolled     = false;
       this.blocking     = false;
       
-      this.background_position = this.options.background_position;
-      // boolean
-      // there are two techniques that we can use to achieve parallax. the first is to just have a bunch of absolutely-positioned
-      // elements all over the place, with varying z-indexes. we move these elements in varying speeds to achieve parallax.
-      // the other technique, is to use background-position. (to activate this, we set the background_position option to true.)
-      // using this strategy, all parallaxed elements are stretched so that they cover the entirety of the body/window (whichever
-      // happens to be larger), and the parallax visual effect is achieved by adjusting the background-position-x/y attribute of
-      // each element as the user scrolls.
-
       this.orientation  = this.options.orientation;
       // 'vertical' or 'horizontal'
       
@@ -165,53 +155,47 @@
           para.max_height = para.force_height;
         }
 
-        if (para.options.background_position===true) {
-          $.each(para.targets, function(idx, target){
-            $(this).width( para.max_width ).height( para.max_height );
-          });
-        }
+        $.each(para.targets, function(idx, target){
+          $(this).width( para.max_width ).height( para.max_height );
+        });
+        
       };
 
       resizeBg();
 
       para.element.height( para.max_height );
 
-      // console.log(this.target_data);
       // console.log("z-index min & max", para.min_z, para.max_z);
 
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
       $.each(para.targets, function(idx, target){
         $(target).each(function(){
-          var tgt    = $(this),
-              top    = para.background_position===false ? tgt.position().top  : parseInt(tgt.css("background-position-y")),
-              left   = para.background_position===false ? tgt.position().left : parseInt(tgt.css("background-position-x")),
-              zindex = parseInt(tgt.css("z-index")),
-              mod    = para._calculate_modifier(zindex),
-              width  = tgt.outerWidth(),
-              height = tgt.outerHeight();
           
-          para.target_data.push([ top, left, mod, zindex, width, height ]);
+          var tgt    = $(this),
+              t      = tgt.css("background-position"),
+              tt     = t.split(" "),
+              top    = parseInt(tt[1]),
+              left   = parseInt(tt[0]),
+              zindex = parseInt(tgt.css("z-index")),
+              mod    = para._calculate_modifier(zindex);
+          
+          para.target_data.push([ top, left, mod, zindex ]);
 
-          tgt.data({
-            "parallax-orig-top"  : top,
-            "parallax-orig-left" : left,
-            "parallax-modifier"  : mod,
-            "parallax-zindex"    : zindex
-          });
+          tgt.css("background-attachment","fixed");
 
           if (mod==para.max_z) { tgt.css("position","fixed") }
 
         });
       });
 
+      //console.log(this.target_data);
+
       var manualScroll = function(){
         para._move_all($(this));
       };
 
       
-      // $.Window.bind('scroll', function(e){});
-
       // both the throttled manualScroll and the (debounced) smartresize do similarly limited actions
       // manualScroll only fires every 50ms, while resizeBg fires after 100ms has passed
       // this is to ensure that the browser doesn't go nuts triggering scroll() and resize() events
@@ -219,7 +203,12 @@
 
       // $(window).scroll($.debounce(40,manualScroll)).smartresize( resizeBg );
       // $(window).scroll( $.throttle(40,manualScroll) );
-      $(window).scroll( manualScroll );
+      if ($.browser.firefox) {
+        $(window).scroll( $.throttle(50, manualScroll) ).resize( resizeBg );
+      } else {
+        $(window).scroll( $.throttle(50, manualScroll) ).smartresize( resizeBg );
+      }
+      
 
     },
 
@@ -249,13 +238,10 @@
 
       var para     = this,
           win_top  = win.scrollTop(),
-          win_left = win.scrollLeft(),
-          css_attrib = this.orientation == 'horizontal' ? 
-            (this.background_position===true ? 'background-position-x' : 'left') :
-            (this.background_position===true ? 'background-position-y' : 'top');
+          win_left = win.scrollLeft();
 
       for (var i=0; i < para.targets.length; i+=1) {
-        para._move_by( i, para.targets[i], win_top, win_left, css_attrib );
+        para._move_by( i, para.targets[i], win_top, win_left );
       }
 
     },
@@ -271,19 +257,20 @@
       var orig_top  = this.target_data[idx][0],
           orig_left = this.target_data[idx][1],
           mod       = this.target_data[idx][2],
+          z         = this.target_data[idx][3],
           max_z     = this.highest_z ? this.highest_z : this.max_z;
       
       if (this.orientation=='horizontal') {
 
         if (mod != max_z) {
-          el.css(css_attrib, orig_left + (win_left * (mod/max_z)));
+          el.css("background-position", (orig_left - (win_left * (mod/max_z))) + "px " + orig_top + "px");
         }
 
       } else if (this.orientation=='vertical') {
 
         if (mod != max_z) {
-          //console.log(orig_top + (win_top * (mod/max_z)), el.position().top);
-          el.css(css_attrib, orig_top + (win_top * (mod/max_z)));
+          var new_top = orig_top - (win_top * (z/max_z));
+          el.css("background-position", orig_left + "px " + new_top + "px");
         }
 
       }
