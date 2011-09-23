@@ -134,6 +134,62 @@ function SpaceScroller () {
 };
 
 
+function AnimatedScroller() {
+
+  this.targets = [];
+  this.current_scroll_t = 0;
+  this.scrolling_downwards = false;
+
+  this.initialize = function(){
+    
+    var as = this;
+
+    this.targets = $.map( $(".animated_scroll_target"), function(el, idx){
+      return [[ $(el), $(el).attr("data-type") ]];
+    });
+
+    console.log( this.targets );
+
+    var do_animate = function(){
+
+      var new_scroll_t = $(this).scrollTop();
+      as.scrolling_downwards = (as.current_scroll_t <= new_scroll_t);
+
+      $.each( as.targets, function(idx, arr){
+        if (arr[1]=='number') {
+          as.animate_numbers( arr[0] );
+        } else if (arr[1]=='graphic') {
+          as.animate_graphics( arr[0] );
+        }
+      });  
+
+      as.current_scroll_t = new_scroll_t;
+
+    };
+
+    $(window).scroll($.throttle(200, do_animate));
+
+  };
+
+  this.animate_numbers = function( el ) {
+    
+    var min     = el.attr("data-min") ? parseInt(el.attr("data-min")) : 0,
+        max     = el.attr("data-max") ? parseInt(el.attr("data-max")) : 1000,
+        step    = el.attr("data-step")=='random' ? (2 + Math.round(Math.random()*8)) : parseInt(el.attr("data-step")),
+        current = parseInt(el.attr("data-current")),
+        new_num = this.scrolling_downwards ? (step+current<max ? (step+current) : max) : (current-step>min ? (step+current) : min);
+    
+    el.text( new_num ).attr( 'data-current', new_num );
+    
+  };
+
+  this.animate_graphics = function( el ) {
+    
+  };
+    
+};
+
+
 
 $(function(){
 	
@@ -141,7 +197,8 @@ $(function(){
   	slides_list    = $(".main_slides"),
   	parallax_cont  = $("body"),
   	anchors        = $(".bttn"),
-    scroller       = new SpaceScroller;
+    scroller       = new SpaceScroller,
+    ani_scroller   = new AnimatedScroller;
   
   parallax_cont.parallax({ 
     targets    : ".parallax_target", 
@@ -151,6 +208,8 @@ $(function(){
   });
 
   scroller.initialize("#nav", ".main_slide");
+  
+  ani_scroller.initialize();
 
   anchors.click(function(){
     scroller.scroll_to( $(this).attr("href").replace(/[\/]+/gi,"") );
