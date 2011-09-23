@@ -177,7 +177,7 @@ function AnimatedScroller() {
         max     = el.attr("data-max") ? parseInt(el.attr("data-max")) : 1000,
         step    = el.attr("data-step")=='random' ? (2 + Math.round(Math.random()*8)) : parseInt(el.attr("data-step")),
         current = parseInt(el.attr("data-current")),
-        new_num = this.scrolling_downwards ? (step+current<max ? (step+current) : max) : (current-step>min ? (step+current) : min);
+        new_num = this.scrolling_downwards ? (step+current<max ? (step+current) : max) : (current-step>min ? (current-step) : min);
     
     el.text( new_num ).attr( 'data-current', new_num );
     
