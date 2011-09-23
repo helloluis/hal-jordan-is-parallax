@@ -343,6 +343,17 @@ $(function(){
   } else {
     $(window).smartresize( positionSlidesAndNav );
   }
+
+  $(".stardust_sparks").everyTime(1000, function(){
+    var el = $(this);
+    if (el.css("opacity")!=1) {
+      el.animate({ opacity : 1},500);
+    } else {
+      var rand = (3+Math.round(Math.random()*10))*0.1;
+      el.animate({ opacity : rand},400);
+    }
+    
+  });
   
 
 

@@ -93,6 +93,7 @@ a.next:hover {opacity:1; color: #fff;}
 .asteroids7 { z-index:70; top:500px; left:100px; width:500px; height:417px; background:transparent url(../images/asteroid5.png) no-repeat; overflow:hidden; }
 
 .stardust { z-index:2; top:150px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust.png) 0 0 no-repeat; }
+.stardust_sparks { z-index:2; top:150px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust_sparks.png) 0 0 no-repeat; }
 
 .bg { width:100%; height:100%; background-position: 0% 0%; top:0px !important; left:0px !important; background-attachment:fixed; }
 .planet2.bg { background-position: 5% 500px; }
@@ -105,6 +106,7 @@ a.next:hover {opacity:1; color: #fff;}
 .asteroids6.bg { background-position: 95% 550px; }
 .asteroids7.bg { background-position: 80% 650px; }
 .stardust.bg { background-position: 20% 0px; }
+.stardust_sparks.bg { background-position: 20% 0px; }
 .space.bg { position:fixed; }
 
 
