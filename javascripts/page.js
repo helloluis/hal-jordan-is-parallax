@@ -62,7 +62,7 @@ function SpaceScroller () {
     
     scr.automated = true;
 
-    $(this.scroller).animate({ scrollTop : elem.offset().top - 50 },500,function(){
+    $(this.scroller).animate({ scrollTop : elem.offset().top - 50 },500,'easeInOutExpo',function(){
       document.location.hash = "/" + elem_id;
       scr.anchors.removeClass("selected");
       anchor.addClass("selected");
@@ -141,8 +141,7 @@ $(function(){
   	slides_list    = $(".main_slides"),
   	parallax_cont  = $("body"),
   	anchors        = $(".bttn"),
-    scroller       = new SpaceScroller,
-    asteroid_field = new AsteroidField;
+    scroller       = new SpaceScroller;
   
   parallax_cont.parallax({ 
     targets    : ".parallax_target", 
