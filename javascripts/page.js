@@ -262,7 +262,7 @@ function AnimatedScroller() {
     }
 
     for (var i=0; i<5; i++) {
-      var speed = 200+(i*100);
+      var speed = 500+(i*100);
       $(as.line_graph_points[i]).animate({ svgCy : rands[i] }, speed);
       $(as.line_graph_lines[i]).animate({ svgY1 : (i > 0 ? rands[i-1] : l_h), svgY2 : rands[i] }, speed);
     }
