@@ -131,22 +131,84 @@ function SpaceScroller () {
     return targetable_h;
 
   };
-}
+};
+
+function AsteroidField () {
+  
+  this.target = false;
+  this.asteroids = [];
+  this.num    = 10+Math.ceil(Math.random()*10);
+
+  this.initialize = function( target ) {
+    var ast = this;
+    ast.target = $(target);
+    ast.target_w = ast.target.width();
+    ast.target_h = ast.target.height();
+    ast.asteroids = $.map( $(".asteroid", target), function(el,idx){ return $(el); } );
+    ast.initialize_asteroids(); 
+  };
+
+  this.initialize_asteroids = function() {
+
+    var ast = this;
+    
+    for (var i=this.asteroids.length; i < this.num; i++) {
+
+      var rand     = Math.round(Math.random()*(this.asteroids.length-1)),
+          asteroid = this.asteroids[rand],
+      new_asteroid = asteroid.clone().appendTo( ast.target );
+
+    }
+
+    this.asteroids = $.map( $(".asteroid", ast.target), function(el,idx){ return $(el); } );
+
+    console.log(this.asteroids);
+
+    $.each(this.asteroids, function(idx, el){
+
+      var rand_s  = (2 + Math.round(Math.random()*3))/10,
+          rand_t  = Math.round(Math.random()*(ast.target_h - el.height())),
+          rand_l  = Math.round(Math.random()*(ast.target_w/2)),
+          rand_z  = Math.round(Math.random()*ast.asteroids.length),
+          rand_sp = 30000 + Math.round(Math.random()*30000);
+
+      console.log(rand_s);
+
+      el.css({
+        width : el.width()*rand_s,
+        height : el.height()*rand_s,
+        top : rand_t,
+        left : rand_l,
+        zIndex : rand_z,
+      }).
+      animate({ left : -rand_l}, rand_sp).
+      show();
+
+    });
+
+  };
+
+  this.animate_asteroids = function() {
+    
+  };
+
+};
 
 
 $(function(){
 	
-  var slides 	    = $(".main_slide"), 
-  	slides_list   = $(".main_slides"),
-  	parallax_cont = $("body"),
-  	anchors       = $(".bttn"),
-    scroller      = new SpaceScroller;
+  var slides 	     = $(".main_slide"), 
+  	slides_list    = $(".main_slides"),
+  	parallax_cont  = $("body"),
+  	anchors        = $(".bttn"),
+    scroller       = new SpaceScroller,
+    asteroid_field = new AsteroidField;
   
   parallax_cont.parallax({ 
     targets    : ".parallax_target", 
     highest_z  : 99, 
     lowest_z   : 1, 
-    force_height : 3000 
+    force_height : 3500 
   });
 
   scroller.initialize("#nav", ".main_slide");
@@ -180,6 +242,8 @@ $(function(){
     }
 
   }
+
+  //asteroid_field.initialize( $("#asteroids") );
 
   positionSlidesAndNav();
 
