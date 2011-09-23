@@ -175,8 +175,8 @@
           var tgt    = $(this),
               t      = tgt.css("background-position"),
               tt     = t.split(" "),
-              top    = parseInt(tt[1]),
-              left   = parseInt(tt[0]),
+              top    = tt[1],
+              left   = tt[0],
               zindex = parseInt(tgt.css("z-index")),
               mod    = para._calculate_modifier(zindex);
           
@@ -263,14 +263,14 @@
       if (this.orientation=='horizontal') {
 
         if (mod != max_z) {
-          el.css("background-position", (orig_left - (win_left * (mod/max_z))) + "px " + orig_top + "px");
+          el.css("background-position", (parseInt(orig_left) - (win_left * (mod/max_z))) + "px " + orig_top );
         }
 
       } else if (this.orientation=='vertical') {
 
         if (mod != max_z) {
-          var new_top = orig_top - (win_top * (z/max_z));
-          el.css("background-position", orig_left + "px " + new_top + "px");
+          var new_top = parseInt(orig_top) - (win_top * (z/max_z));
+          el.css("background-position", orig_left + " " + new_top + "px");
         }
 
       }
