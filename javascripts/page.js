@@ -136,55 +136,148 @@ function SpaceScroller () {
 
 function AnimatedScroller() {
 
+  this.target_class = ".animated_scroll_target";
   this.targets = [];
   this.current_scroll_t = 0;
+  this.scrolling = false;
   this.scrolling_downwards = false;
 
   this.initialize = function(){
     
     var as = this;
 
-    this.targets = $.map( $(".animated_scroll_target"), function(el, idx){
-      return [[ $(el), $(el).attr("data-type") ]];
+    this.targets = $.map( $(this.target_class), function(el, idx){
+      var elem = $(el);
+      return [ [ 
+          elem, 
+          elem.attr("data-type"),
+          elem.attr("data-current") ? parseInt(elem.attr("data-current")) : 0,
+          elem.attr("data-min") ? parseInt(elem.attr("data-min")) : 0,
+          elem.attr("data-max") ? parseInt(elem.attr("data-max")) : 100,
+          elem.attr("data-step") ? parseInt(elem.attr("data-step")) : 1
+        ] ];
     });
 
-    console.log( this.targets );
+    console.log(this.targets);
 
-    var do_animate = function(){
+    $(this.target_class).each(function(idx, el){
 
-      var new_scroll_t = $(this).scrollTop();
-      as.scrolling_downwards = (as.current_scroll_t <= new_scroll_t);
+      $(el).bind('inview', function(e, isInView, visiblePartX, visiblePartY) { 
+        if (isInView) {
+          if ($(this).attr("data-type")=='number') {
+            $(this).everyTime(50,'animation',function(){
+              as.animate_numbers( idx );
+            });
 
-      $.each( as.targets, function(idx, arr){
-        if (arr[1]=='number') {
-          as.animate_numbers( arr[0] );
-        } else if (arr[1]=='graphic') {
-          as.animate_graphics( arr[0] );
+          } else if ($(this).attr("data-type")=='graphic') {
+            as.animate_graphics( idx );
+
+          } else if ($(this).attr("data-type")=='line_graph') {
+            as.animate_line_graph();
+
+          }
+
+        } else {
+
+          if ($(this).attr("data-type")=='number') {
+            as.reset_numbers( idx );
+            $(this).stopTime('animation');
+
+          } else if ($(this).attr("data-type")=='graphic') {
+            as.reset_graphics( idx );
+
+          } else if ($(this).attr("data-type")=='line_graph') {
+            as.reset_line_graph( idx );
+          }
+
         }
-      });  
+      });
 
-      as.current_scroll_t = new_scroll_t;
+    });
 
-    };
-
-    $(window).scroll($.throttle(200, do_animate));
+    this.initialize_line_graph();
 
   };
 
-  this.animate_numbers = function( el ) {
+  this.animate_numbers = function( idx ) {
     
-    var min     = el.attr("data-min") ? parseInt(el.attr("data-min")) : 0,
-        max     = el.attr("data-max") ? parseInt(el.attr("data-max")) : 1000,
-        step    = el.attr("data-step")=='random' ? (2 + Math.round(Math.random()*8)) : parseInt(el.attr("data-step")),
-        current = parseInt(el.attr("data-current")),
-        new_num = this.scrolling_downwards ? (step+current<max ? (step+current) : max) : (current-step>min ? (current-step) : min);
+    var el      = this.targets[idx][0],
+        current = this.targets[idx][2],
+        min     = this.targets[idx][3],
+        max     = this.targets[idx][4],
+        step    = this.targets[idx][5],
+        new_num = (step+current<max ? (step+current) : max);
     
-    el.text( new_num ).attr( 'data-current', new_num );
+    el.text( new_num );
+
+    this.targets[idx][2] = new_num;
     
   };
 
-  this.animate_graphics = function( el ) {
+  this.reset_numbers = function( idx ) {
     
+    this.targets[idx][2] = 0;
+
+  };
+
+  this.animate_graphics = function( idx ) {
+    
+    var el      = this.targets[idx][0];
+
+  };
+
+  this.reset_graphics = function( idx ) {
+    
+  };
+
+  this.initialize_line_graph = function( ) {
+    
+    var as   = this,
+        cont = $("#line_graph").svg();
+    
+    as.line_graph_points = [];
+    as.line_graph_lines = [];
+    as.line_graph = cont;
+    as.line_graph_svg = cont.svg('get');
+
+    for (var i=0; i<5; i++) {
+      var ln = as.line_graph_svg.line(145*i, cont.height(), 145*(i+1), cont.height(), { stroke : "#f90", strokeWidth : 2 }); 
+      as.line_graph_lines.push( ln );
+    }
+
+    for (var i=0; i<5; i++) {
+      var c = as.line_graph_svg.circle(145*(i+1), cont.height(), 3, { fill : "#fff", stroke : "#000", strokeWidth : 2});
+      as.line_graph_points.push( c );
+    }
+
+  };
+
+  this.animate_line_graph = function( ) {
+    var as  = this,
+        l_h = as.line_graph.height(),
+        rands = [];
+
+    for (var i=0; i<5; i++) {
+      rands.push( l_h - (2 + Math.floor((i*(l_h/5))+(Math.random()*(l_h/5)))) );
+    }
+
+    for (var i=0; i<5; i++) {
+      var speed = 200+(i*100);
+      $(as.line_graph_points[i]).animate({ svgCy : rands[i] }, speed);
+      $(as.line_graph_lines[i]).animate({ svgY1 : (i > 0 ? rands[i-1] : l_h), svgY2 : rands[i] }, speed);
+    }
+  };
+
+  this.reset_line_graph = function( ) {
+
+    var as  = this,
+        l_h = as.line_graph.height();
+
+    for (var i=0; i<5; i++) {
+      $(as.line_graph_points[i]).animate({ svgCy : l_h }, 100);
+      $(as.line_graph_lines[i]).animate({ svgY1 : l_h, svgY2 : l_h }, 100);
+    }
+
   };
     
 };

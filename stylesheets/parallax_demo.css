@@ -44,14 +44,40 @@ h1, h3 { margin-bottom:0px; }
 
 .main_slide h1 { font-size:40px; text-indent:0px; display:block; float:none; opacity:1.0; color:#fc0; font-weight:normal; margin:0px 0px 10px 0px; font-family: 'Puritan', sans-serif; }
 
+
 .main_slide h1, .main_slide h2,.main_slide p,.main_slide .sign_up_form { background:rgba(0,0,0,0.7); padding:20px 20px; margin:0px 0px 15px 0px; box-shadow:0 0 20px #333; }
+.main_slide p { padding:20px 20px 30px 20px;}
 .main_slide p { line-height:24px; display:block; font-size:15px; }
 .main_slide .sign_up_form { width:100%; height:300px; }
-#welcome.main_slide p { font-size:20px; }
 
-.slideshow { background:#777; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; }
+#welcome.main_slide p { font-size:20px; line-height: 30px;}
+
+
+.slideshow { background:#777; margin:0px 0px 0px 0px; padding:0px 0px 0px 0px; position: absolute;}
 .slideshow_analytics { background:#000 url(../images/slide_analytics.jpg) no-repeat; width:660px; height:300px;  }
-.slideshow_analytics li { display: none;}
+.slideshow_analytics #line_graph { position:absolute; top:40px; left:47px; width:605px; height:97px; }
+.slideshow_analytics span { position: relative; padding:0 !important; margin: 0 !important; background: transparent !important; font-family: "Lucida Grande", Arial, "sans serif"; position:absolute; }
+.slideshow_analytics .point-one { left: 185px; top: 107px; background:#fff;border:3px solid #666; height:3px; width:3px;}
+.slideshow_analytics .point-two { left: 326px; top: 97px; background:#fff;border:3px solid #666; height:3px; width:3px;}
+.slideshow_analytics .point-three { left: 467px; top: 61px; background:#fff;border:3px solid #666; height:3px; width:3px;}
+.slideshow_analytics .point-four { left: 608px; top: 84px; background:#fff;border:3px solid #666; height:3px; width:3px;}
+
+.slideshow_analytics .one { left: 20px; top: 205px; color: #333; font-size:60px; letter-spacing: -7px;}
+.slideshow_analytics .one-delta { left: 39px; top: 272px; color: #666; font-size:12px;letter-spacing: -1px; }
+.slideshow_analytics .two {  left: 205px; top: 240px; color: #333; font-size: 20px; letter-spacing: -2px;}
+.slideshow_analytics .two-delta { left: 257px; top: 240px; color: #999;font-size: 12px; letter-spacing: 0; }
+.slideshow_analytics .three { left: 288px; top: 240px; color: #333; font-size: 20px; letter-spacing: -2px; }
+.slideshow_analytics .three-delta { left: 330px; top: 240px;color: #999;font-size: 12px; letter-spacing: 0; }
+.slideshow_analytics .four { left: 439px; top: 218px; color: #f90;font-size: 13px;  font-weight:bold;  letter-spacing: -1px; }
+.slideshow_analytics .five { left: 490px; top: 218px; color: #f90;font-size: 13px;  font-weight:bold; letter-spacing: -1px; }
+.slideshow_analytics .six { left: 563px; top: 218px; color: #f90;font-size: 13px;  font-weight:bold; letter-spacing: -1px; }
+.slideshow_analytics .seven { left: 440px; top: 276px; color: #f90;font-size: 13px;  font-weight:bold; letter-spacing: -1px;  }
+.slideshow_analytics .eight { left: 493px; top: 276px; color: #f90;font-size: 13px;  font-weight:bold; letter-spacing: -1px;  }
+.slideshow_analytics .nine { left: 563px; top: 276px; color: #f90;font-size: 13px; font-weight:bold; letter-spacing: -1px;  }
+
+a.next { background: transparent url(../images/next.png) no-repeat; width:85px; height:43px;  right: 20px; display: block ; position: absolute; text-transform: uppercase; padding-top: 5px; background-position: 30px -5px; margin-top: -15px; opacity:0.9; color: #eee;}
+a.bttn_sign_up { background-position: 125px -5px; width: 180px;}
+a.next:hover {opacity:1; color: #fff;}
 .parallax_target { position:absolute; }
 
 

@@ -75,7 +75,7 @@
       <div class="inner">
         <h1>Welcome to Infinite.ly.</h1>
         <p>For small business owners, the universe of social networks is a vast and mysterious place. 
-        We'll make sure you don't get lost.<br /><a href="#/buzz" class="bttn bttn_buzz">Here's how</a>.</p>
+        We're here to make sure you don't get lost.<br /><a href="#/buzz" class="bttn bttn_buzz">Here's how</a>.</p>
       </div>
     </li>
     
@@ -83,7 +83,7 @@
       <div class="inner">
         <h2>Connecting with Your Audience</h2>
         <p>Talking to your customers and fans has never been easier. Our composer lets you easily schedule your posts to Twitter and Facebook, from one central place. Our aggregated address book lists every fan, follower, friend or contact across all your accounts. <br />
-        <a href="#/analytics" class="bttn bttn_analytics">Next</a>.
+        <a href="#/analytics" class="bttn bttn_analytics next">Next</a>
         </p>
         <ol class="slideshow slideshow_buzz">
           <li>
@@ -98,20 +98,36 @@
     <li id="analytics" class="main_slide" title="Trends">
       <div class="inner">
         <h2>Tracking Trends</h2>
-        <p>Getting hard numbers on your performance is a snap. All the mentions, reposts, comments and ratings about your brand is available for download and archiving. You can even monitor important buzz topics and get a real-time view of what people are saying about them online.<br/>
-        <a href="#/fan_page" class="bttn bttn_fan_page">Next</a>.</p>
-        <ol class="slideshow slideshow_analytics">
-          <li>slideshow frame 1</li>
-          <li>slideshow frame 2</li>
-          <li>slideshow frame 3</li>
-        </ol>
+        <p>Getting hard numbers on your performance is performing is a snap. All the mentions, reposts, comments and ratings about your brand is available for download and archiving. You can even monitor important buzz topics and get a real-time view of what people are saying about them online.<br/>
+        <a href="#/fan_page" class="bttn bttn_fan_page next">Next</a></p>
+        <div class="slideshow slideshow_analytics">
+          <div id="line_graph" class="animated_scroll_target line_graph" data-type="line_graph"></div>
+          <!-- <span data-type="graphic" class="animated_scroll_target point-one">&nbsp;</span>
+          <span data-type="graphic" class="animated_scroll_target point-two">&nbsp;</span>
+          <span data-type="graphic" class="animated_scroll_target point-three">&nbsp;</span>
+          <span data-type="graphic" class="animated_scroll_target point-four">&nbsp;</span> -->
+          <span data-type="number" data-max="3072" data-step="59" data-current="387" class="animated_scroll_target one">989</span>
+          <span data-type="number" data-max="23" data-step="1" data-current="0" class="animated_scroll_target one-delta">0</span>
+          <span data-type="number" data-max="2162" data-step="37" data-current="459" class="animated_scroll_target two">459</span>
+          <span data-type="number" data-max="89" data-step="2" data-current="0" class="animated_scroll_target two-delta">0</span>
+          <span data-type="number" data-max="132" data-step="2" data-current="0" class="animated_scroll_target three">0</span>
+          <span data-type="number" data-max="12" data-step="1" data-current="0" class="animated_scroll_target three-delta">0</span>
+          <span data-type="number" data-max="10" data-step="1" data-current="0" class="animated_scroll_target four">0</span>
+          <span data-type="number" data-max="12" data-step="1" data-current="0" class="animated_scroll_target five">0</span>
+          <span data-type="number" data-max="327" data-step="4" data-current="0" class="animated_scroll_target six">0</span>
+          <span data-type="number" data-max="17" data-step="1" data-current="0" class="animated_scroll_target seven">0</span>
+          <span data-type="number" data-max="35" data-step="1" data-current="0" class="animated_scroll_target eight">0</span>
+          <span data-type="number" data-max="189" data-step="3" data-current="0" class="animated_scroll_target nine">0</span>
+        </div>
       </div>
     </li>
 
     <li id="fan_page" class="main_slide" title="Fan Page">
       <div class="inner"><h2>Building Your Social Presence</h2>
+
         <p>Get that universal fan page that you always wanted, no design skills necessary. It connects to your Facebook fan page, Twitter feed, Flickr stream and Youtube channel, so you can use it as the hub for all your brand's social networking efforts.<br />
-        <a href="#/sign_up" class="bttn bttn_sign_up">Get started today</a>.</p>
+        <a href="#/sign_up" class="bttn bttn_sign_up next">Get started today</a></p>
+
         <ol class="slideshow slideshow_fan_page">
           <li>slideshow frame 1</li>
           <li>slideshow frame 2</li>
@@ -144,6 +160,10 @@
 <script language="Javascript" src="javascripts/jquery.ba-throttle-debounce.js"></script>
 <script language="Javascript" src="javascripts/jquery.parallax.js"></script>
 <script language="Javascript" src="javascripts/jquery.imgpreload.js"></script>
+<script language="Javascript" src="javascripts/jquery.inview.js"></script>
+<script language="Javascript" src="javascripts/jquery.svg.min.js"></script>
+<script language="Javascript" src="javascripts/jquery.svganim.min.js"></script>
+<script language="Javascript" src="javascripts/jquery-timers.js"></script>
 <script language="Javascript" src="javascripts/page.js"></script>
 
 </body>
