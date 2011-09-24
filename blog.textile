@@ -1,0 +1,97 @@
+h1. Anatomy of a Landing Page, Episode I: The Phantom Parallax
+
+
+Eighteen months later, and here we all are.
+
+With our upcoming public beta release, it became apparent that Infinitely's home page should be revamped to something appropriately celebratory. It needed to be a real humdinger too, as this was both a culmination and an emergence for our small team. And for everyone else it would be the first thing they'd see of our web app, and you know what they say about first impressions.
+
+We had a rough idea what we wanted to do from the outset: Create a storytelling experience similar to "NikeBetterWorld.com":http://nikebetterworld.com or "Dentsu Network":http://dentsunetwork.com, but using our own space-themed design cues. The core technique employed on both these pages is of course called parallax, and one of the main challenges for our new page was to write our own jQuery plugin for implementing this effect.
+
+Quick refresher for the uninitiated: parallax is the difference in the perceived position of an object when viewed from different lines of sight. As your viewpoint shifts from side to side, objects in the distance will appear to move slower than objects that are closer to you. When recreated properly in a layout, it gives viewers a sense of depth, and can be a compelling way to make a design really pop.
+
+So how does one go about creating the parallax effect in-browser?
+
+The most common method is to use the motion of scrolling as your "shifting viewpoint." As you scroll, objects in the background respond slower than objects in the foreground (i.e., your content), so you have to scroll further than normal before they exit the viewable screen area. In our case, our layout was composed of a background image of deep space, with planetary objects and asteroids absolutely-positioned in varying distances from the viewer.
+
+Fortunately, browsers already come with a way to establish pseudo-distance, with the CSS attribute z-index. Using z-index, we can define which of our objects are below others, or in our case, "furthest" from the viewer. For example, with the deep space background image as "z-index : 1", our asteroids as "z-index: 20", and our textual content as "z-index: 99", we know that our content will always be on top of either the deep space or the asteroids. Using these z-indexes as our basis, we could say that the deep space background moves at 1/99th the speed of our foreground, and the asteroids move at about a fifth. You could express the formula in pseudo-code thusly:
+
+<code>
+new_item_position_top = original_item_position_top - ($(window).scrollTop() * ( item_zindex / max_zindex ))
+</code>
+
+In order to compute for an item's new position, we multiply the window's scrollTop() position by (item_zindex / max_zindex), then subtract that from the item's original position. (This is more or less the exact formula I used in our final jQuery-Parallax plugin.)
+
+Once you've gotten the various speed ratios computed, all you need to do is shift your images' positions while the window is being scrolled. Easy, right? 
+
+Well, not quite. It turns out that the window.scroll() event is not terribly consistent to work with. At the very heart of my jQuery-Parallax plugin is the line:
+
+<code>
+$(window).scroll( doParallax );
+</code>
+
+Essentially all this does is attach the doParallax() function to the window.scroll() event, so that every time the user scrolls, that function is called. But what does "every time" mean? Every browser has a slightly different definition. Window.scroll() can sometimes be triggered hundreds of times per second, so if your function is computationally taxing, your browser will start to crawl.
+
+The solution to this is a technique called throttling, which limits the number of times your code is run per second. I used a jQuery plugin called "ba-throttle-debounce":http://benalman.com/projects/jquery-throttle-debounce-plugin/, but you could just as easily write your own limiter. Now the code looks like this:
+
+<code>
+$(window).scroll( $.throttle(41, doParallax) );
+</code>
+
+The number "41" refers to the number of milliseconds before doParallax() can be run again. I chose 41 because that means my code will be run roughly 24 times per second, which in animation terms is usually when things start to look smooth to the human eye. For very compute-heavy applications, increasing the number is generally recommended.
+
+Now, if you tried to piece together your own script based on my notes up to this point, you would more or less have a working in-browser parallax. But you'll likely also hit upon the same problem that I did it at this stage: terrible image stuttering as you scroll up or down. My images were jumping choppily to their parallaxed positions instead of moving smoothly, and I couldn't figure out why. 
+
+I initially thought that it was a performance issue, so I spent lots of time optimizing my doParallax() function to be as efficient as possible. Only later did I realize what was actually happening. My positioning script was fighting the browser for control, and the browser was winning. Essentially, the browser had its own ideas about where these images should be positioned as the window was scrolled, and it would place them there first, before triggering my script and then moving them to their new spots, causing a very jerky visual effect.
+
+It turns out that I couldn't work with my images as absolutely-positioned items on the page; it was simply untenable. So instead I turned them all into divs with background-image CSS values, hoping to achieve the same effect by programatically changing their background-position coordinates instead. In order for this trick to work, each parallaxed item needed to have the following CSS applied:
+
+<code>
+.parallaxed_item { 
+	background : transparent url(images/asteroid.png) 100px 0px no-repeat;
+	background-attachment : fixed;
+	position : absolute;
+	top : 0px;
+	left : 0px;
+	width : 100%;
+	height : 100%;
+}
+</code>
+
+If you give a div a background-attachment value of 'fixed', the browser completely ignores them as you scroll the page, which is perfect for us. That means we can recalculate its background-position manually without having to fight the browser. 
+
+The main trick to getting this all working is that every parallaxed_item had to be stretched across the whole page, and eagle-eyed observers will note that simply setting width and height values to "100%" is not enough to do this.
+
+For every parallaxed_item, we need to do something similar to this:
+
+<code>
+
+$(".parallaxed_item").
+	width( Math.max($('body').width(), $(window).width()) ).
+	height( Math.max($('body').height(), $(window).height() ) );
+
+</code>
+
+This sets the width and height of each item to either the body's width/height, or the window's width/height, whichever is greater. Of course, if the user resizes their window, our calculations become obsolete, so they'll need to be updated thusly:
+
+<code>
+
+$(window).resize(function(){
+	$(".parallaxed_item").
+		width( Math.max($('body').width(), $(window).width()) ).
+		height( Math.max($('body').height(), $(window).height() ) );
+});
+
+</code>
+
+Window.resize(), like Window.Scroll(), is another one of those indefinitely-triggering browser events that can be annoying to work with. I found that it was necessary to add a limiter to my resize function also, to prevent it from firing too many times per second.
+
+
+
+
+Given two objects, one in the foreground, and one in the background, the latter moves much more slowly if you shift your viewing angle
+
+For reference, our landing page for most of 2011 looked like this:
+
+[screenshot]
+
+In terms of content, the new page was similar enough to the current state that we could just dive right in.

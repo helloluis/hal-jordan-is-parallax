@@ -6,54 +6,86 @@
   Licensed under the MIT license
   Copyright 2011 Luis Buenaventura (@helloluis)
 
-  - project started 2011-09-03
+  - project started 2011-09-19
   - plugin pattern pilfered from @desandro's Masonry
-  - uses the mini-plugin 'smartresize', courtesy of respective author
+  - uses the plugin 'ba-throttle-debounce', courtesy of respective author
 
 */
 
 (function( window, $, undefined ){
   
+ /*!
+  * jQuery throttle / debounce - v1.1 - 3/7/2010
+  * http://benalman.com/projects/jquery-throttle-debounce-plugin/
+  * 
+  * Copyright (c) 2010 "Cowboy" Ben Alman
+  * Dual licensed under the MIT and GPL licenses.
+  * http://benalman.com/about/license/
+  */
+  
+  var $ = window.jQuery || window.Cowboy || ( window.Cowboy = {} ),
+    jq_throttle;
+  
+  $.throttle = jq_throttle = function( delay, no_trailing, callback, debounce_mode ) {
+
+    var timeout_id,
+      last_exec = 0;
+    
+    if ( typeof no_trailing !== 'boolean' ) {
+      debounce_mode = callback;
+      callback = no_trailing;
+      no_trailing = undefined;
+    }
+    
+    function wrapper() {
+      var that = this,
+        elapsed = +new Date() - last_exec,
+        args = arguments;
+      
+      function exec() {
+        last_exec = +new Date();
+        callback.apply( that, args );
+      };
+      
+      function clear() {
+        timeout_id = undefined;
+      };
+      
+      if ( debounce_mode && !timeout_id ) {
+        exec();
+      }
+      
+      timeout_id && clearTimeout( timeout_id );
+      
+      if ( debounce_mode === undefined && elapsed > delay ) {
+        exec();
+        
+      } else if ( no_trailing !== true ) {
+        timeout_id = setTimeout( debounce_mode ? clear : exec, debounce_mode === undefined ? delay - elapsed : delay );
+      }
+    };
+    
+    if ( $.guid ) {
+      wrapper.guid = callback.guid = callback.guid || $.guid++;
+    }
+    
+    return wrapper;
+  };
+  
+  $.debounce = function( delay, at_begin, callback ) {
+    return callback === undefined
+      ? jq_throttle( delay, at_begin, false )
+      : jq_throttle( delay, callback, at_begin !== false );
+  };
+
+
+
   /*
-   * smartresize: debounced resize event for jQuery
    *
-   * latest version and complete README available on Github:
-   * https://github.com/louisremi/jquery.smartresize.js
+   * Main Parallax plugin starts here
    *
-   * Copyright 2011 @louis_remi
-   * Licensed under the MIT license.
    */
 
-  var $event = $.event,
-      resizeTimeout;
-
-  $event.special.smartresize = {
-    setup: function() {
-      $(this).bind( "resize", $event.special.smartresize.handler );
-    },
-    teardown: function() {
-      $(this).unbind( "resize", $event.special.smartresize.handler );
-    },
-    handler: function( event, execAsap ) {
-      // Save the context
-      var context = this,
-          args = arguments;
-
-      // set correct event type
-      event.type = "smartresize";
-
-      if ( resizeTimeout ) { clearTimeout( resizeTimeout ); }
-      resizeTimeout = setTimeout(function() {
-        jQuery.event.handle.apply( context, args );
-      }, execAsap === "execAsap"? 0 : 100 );
-    }
-  };
-
-  $.fn.smartresize = function( fn ) {
-    return fn ? this.bind( "smartresize", fn ) : this.trigger( "smartresize", ["execAsap"] );
-  };
-
-  
   // our "Widget" object constructor
   $.Parallax = function( options, element ){
     this.element = $( element );
@@ -200,15 +232,7 @@
       // manualScroll only fires every 50ms, while resizeBg fires after 100ms has passed
       // this is to ensure that the browser doesn't go nuts triggering scroll() and resize() events
       // over and over again with very little actual effect on the layout
-
-      // $(window).scroll($.debounce(40,manualScroll)).smartresize( resizeBg );
-      // $(window).scroll( $.throttle(40,manualScroll) );
-      if ($.browser.firefox) {
-        $(window).scroll( $.throttle(50, manualScroll) ).resize( resizeBg );
-      } else {
-        $(window).scroll( $.throttle(50, manualScroll) ).smartresize( resizeBg );
-      }
-      
+      $(window).scroll( $.throttle(41, manualScroll) ).resize( $.debounce(100, resizeBg) );      
 
     },
 
@@ -277,9 +301,10 @@
       
     },
 
-    // the lowest z-index will require a scroll_to value of exactly what the window.scrollTop() would be
-    // the highest z-index will require half of what the window.scrollTop() would be
-    // so to compute everything in between those two, we just do a bit of algebra
+    //
+    // we can call this externally in order to programatically scroll the page
+    // to a particular item.
+    //
     scroll_to : function( target, add_hash ){
       
       var para     = this;
@@ -291,8 +316,6 @@
       if (!para.is_valid_target( para.scroll_target )) {
         return false;
       }
-
-      //console.log("scrolling to " + para.scroll_target);
 
       var scroller = $("body"),
           el       = $(para.scroll_target),

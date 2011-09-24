@@ -334,8 +334,6 @@ $(function(){
 
   }
 
-  //asteroid_field.initialize( $("#asteroids") );
-
   positionSlidesAndNav();
 
   if ($.browser.firefox) {
