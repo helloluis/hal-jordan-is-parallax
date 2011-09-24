@@ -154,9 +154,7 @@
       
       this.max_width    = 0;
       this.max_height   = 0; 
-      this.force_width  = this.options.force_width;
-      this.force_height = this.options.force_height;
-
+      
       // this is the slowest an element will move in response to a window.scroll(), i.e., 1/100th of a pixel
       this.min_modifier = 1;
       this.max_modifier = 999;
@@ -175,22 +173,7 @@
 
       
       var resizeBg = function() {
-        if (!para.force_width) {
-          para.max_width  = $('body').width() > $(window).width() ? $('body').width() : $(window).width();  
-        } else {
-          para.max_width = para.force_width;
-        }
-
-        if (!para.force_height) {
-          para.max_height = $('body').height() > $(window).height() ? $('body').height() : $(window).height();  
-        } else {
-          para.max_height = para.force_height;
-        }
-
-        $.each(para.targets, function(idx, target){
-          $(this).width( para.max_width ).height( para.max_height );
-        });
-        
+        para._resize_bg();
       };
 
       resizeBg();
@@ -346,6 +329,36 @@
       }
     },
 
+    resize : function( new_h ) {
+      
+      this.options.force_height = new_h;
+      this.element.height( new_h );
+      this._resize_bg();
+
+    },
+
+    _resize_bg : function() {
+
+      var para = this;
+            
+      if (!para.options.force_width) {
+        para.max_width  = $('body').width() > $(window).width() ? $('body').width() : $(window).width();  
+      } else {
+        para.max_width = para.options.force_width;
+      }
+
+      if (!para.options.force_height) {
+        para.max_height = $('body').height() > $(window).height() ? $('body').height() : $(window).height();  
+      } else {
+        para.max_height = para.options.force_height;
+      }
+
+      $.each(para.targets, function(idx, target){
+        $(this).width( para.max_width ).height( para.max_height );
+      });
+        
+    },
+
     is_valid_target : function( el ) {
 
       if ($(el).data("parallax-modifier")) {
@@ -401,12 +414,12 @@
       this.each(function(){
         var instance = $.data( this, 'Parallax' );
         if ( !instance ) {
-          logError( "cannot call methods on Parallax prior to initialization; " +
+          console.log( "cannot call methods on Parallax prior to initialization; " +
             "attempted to call method '" + options + "'" );
           return;
         }
         if ( !$.isFunction( instance[options] ) || options.charAt(0) === "_" ) {
-          logError( "no such method '" + options + "' for Parallax instance" );
+          console.log( "no such method '" + options + "' for Parallax instance" );
           return;
         }
         // apply method

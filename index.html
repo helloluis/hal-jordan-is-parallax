@@ -19,10 +19,10 @@
 <div id="main" class="parallax" style="z-index:1">
 
   <div id="header">
+    <div class="toggle">Already a member? <a href="#!">Sign In to Infinite.ly</a></div>
     <div class="header">
-      <h1 id="logo"><a href="#">Infinite.ly</a></h1>
-
       <div class="login">
+        <h1 id="logo"><a href="#">Infinite.ly</a></h1>
         <form class="form">  
             <p class="email">  
               <label for="email" style="display:none">E-mail</label>  
@@ -35,9 +35,13 @@
             <p class="password"> 
               <label for="email" style="display:none">Password</label>   
               <input type="password" name="password" id="password" placeholder="Password" /><p><a href="#">Forgot password?</a></p></p>  
-            <p class="submit"><input type="submit" value="Sign In" /></p>
+            <p class="submit"><input type="submit" value="Sign In" /> 
+              <span class="hide">Cancel</span>
+            </p>
         </form> 
       </div>
+
+
         
     </div>
   </div>
@@ -82,22 +86,18 @@
     
     <li id="buzz" class="main_slide" title="Buzz">
       <div class="inner">
-        <h2>Connecting with Your Audience</h2>
-        <p>Talking to your customers and fans has never been easier. Our composer lets you easily schedule your posts to Twitter and Facebook, from one central place. Our aggregated address book lists every fan, follower, friend or contact across all your accounts. <br />
+        <h2>We Connect You with Your Audience</h2>
+        <p>Talking to your customers and fans has never been easier. Our buzz grid aggregates all your social network feeds in a single, filterable page. Our composer lets you easily schedule your posts to Twitter and Facebook, from one central place. And our aggregated address book (<em>coming soon!</em>) lists every fan, follower, friend or contact across all your accounts. <br />
         <a href="#/analytics" class="bttn bttn_analytics next">Next</a>
         </p>
-        <ol class="slideshow slideshow_buzz">
-          <li>slideshow frame 1</li>
-          <li>slideshow frame 2</li>
-          <li>slideshow frame 3</li>
-        </ol>
+        <div class="slideshow"></div>
       </div>
     </li>
 
     <li id="analytics" class="main_slide" title="Trends">
       <div class="inner">
-        <h2>Tracking Trends</h2>
-        <p>Getting hard numbers on your performance is performing is a snap. All the mentions, reposts, comments and ratings about your brand is available for download and archiving. You can even monitor important buzz topics and get a real-time view of what people are saying about them online.<br/>
+        <h2>We Track the Trends</h2>
+        <p>Getting hard numbers on your performance is a snap. All the mentions, reposts, comments and ratings about your brand is available for download and archiving. You can even monitor important buzz topics and get a real-time view of what people are saying about them online.<br/>
         <a href="#/fan_page" class="bttn bttn_fan_page next">Next</a></p>
         <div class="slideshow slideshow_analytics">
           <div id="line_graph" class="animated_scroll_target line_graph" data-type="line_graph"></div>
@@ -122,23 +122,19 @@
     </li>
 
     <li id="fan_page" class="main_slide" title="Fan Page">
-      <div class="inner"><h2>Building Your Social Presence</h2>
+      <div class="inner"><h2>We Build Your Social Presence</h2>
 
-        <p>Get that universal fan page that you always wanted, no design skills necessary. It connects to your Facebook fan page, Twitter feed, Flickr stream and Youtube channel, so you can use it as the hub for all your brand's social networking efforts.<br />
+        <p>Get that fan page that you always wanted, no design skills necessary. Infinite.ly's fan pages are universal &mdash; they connect to your Facebook fan page, Twitter feed, Flickr stream and Youtube channel, so you can use it as the hub for all of your business's social networking efforts.<br />
         <a href="#/sign_up" class="bttn bttn_sign_up next">Get started today</a></p>
 
-        <ol class="slideshow slideshow_fan_page">
-          <li>slideshow frame 1</li>
-          <li>slideshow frame 2</li>
-          <li>slideshow frame 3</li>
-        </ol>
+        <div class="slideshow"></div>
       </div>
     </li>
 
     <li id="sign_up" class="main_slide" title="Sign Up">
       <div class="inner">
-        <h2>Sign Up for Free</h2>
-        <p>It's free, infinitely!</p>
+        <h2>And It's Free, Infinitely!</h2>
+        <p>Our starter accounts are free to try, forever. For more serious folk, our premium services start at just $29/month.</p>
         <div class="sign_up_form"></div>
       </div>
     </li>

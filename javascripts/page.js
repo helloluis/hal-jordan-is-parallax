@@ -62,7 +62,7 @@ function SpaceScroller () {
     
     scr.automated = true;
 
-    $(this.scroller).animate({ scrollTop : elem.offset().top - 50 },500,'easeInOutExpo',function(){
+    $(this.scroller).animate({ scrollTop : elem.offset().top },500,'easeInOutExpo',function(){
       document.location.hash = "/" + elem_id;
       scr.anchors.removeClass("selected");
       anchor.addClass("selected");
@@ -158,7 +158,7 @@ function AnimatedScroller() {
         ] ];
     });
 
-    console.log(this.targets);
+    // console.log(this.targets);
 
     $(this.target_class).each(function(idx, el){
 
@@ -223,11 +223,11 @@ function AnimatedScroller() {
   this.animate_graphics = function( idx ) {
     
     var el      = this.targets[idx][0];
-
+    // TODO
   };
 
   this.reset_graphics = function( idx ) {
-    
+    // TODO
   };
 
   this.initialize_line_graph = function( ) {
@@ -291,8 +291,39 @@ $(function(){
   	parallax_cont  = $("body"),
   	anchors        = $(".bttn"),
     scroller       = new SpaceScroller,
-    ani_scroller   = new AnimatedScroller;
+    ani_scroller   = new AnimatedScroller,
+    resizePage     = function() {
+
+      var slides_c  = $(".main_slides"), 
+          slides    = $(".main_slide"),
+          nav       = $("#sidebar"), 
+          win_w     = $(window).width(), 
+          slides_w  = slides_c.outerWidth(), 
+          nav_w     = nav.outerWidth(),
+          header    = $("#header"),
+          footer    = $("#footer");
+
+      // reposition slides and nav
+      if (win_w > slides_w + nav_w) {
+        var left = (win_w - (slides_w+nav_w+50))/2;
+        slides_c.css("left", left);
+        footer.css("left", left);
+        nav.css("left", left + slides_w + 30);
+      } else {
+        slides_c.css("left", "0px");
+        nav.css("left", slides_w + 30);
+      }
+
+      // resize individual slides
+      var new_slide_h = $(window).height() - (slides.outerHeight() - slides.height());
+
+      slides.height( new_slide_h );
+      parallax_cont.parallax( "resize", ($(window).height()*slides.length)+slides_c.offset().top );
+
+
+    };
   
+
   parallax_cont.parallax({ 
     targets    : ".parallax_target", 
     highest_z  : 99, 
@@ -300,48 +331,36 @@ $(function(){
     force_height : 3500 
   });
 
+  resizePage();
+
   scroller.initialize("#nav", ".main_slide");
-  
-  ani_scroller.initialize();
 
   anchors.click(function(){
     scroller.scroll_to( $(this).attr("href").replace(/[\/]+/gi,"") );
     return false;
   });
 
+  ani_scroller.initialize();
+
+  // if a hash is present, we fake a click to jump the user to that section
   if (document.location.hash.length>1) {
     $(".bttn_" + document.location.hash.replace(/[\/\#]+/gi,"")).click();
   }
 
-  var positionSlidesAndNav = function() {
+  // toggler for header login form
+  $("#header .toggle > a").click(function(){
+    $("#header .toggle").hide();
+    $("#header .header").show();
+  });
 
-    var slides    = $(".main_slides"), 
-         nav      = $("#sidebar"), 
-         win_w    = $(window).width(), 
-         slides_w = slides.outerWidth(), 
-         nav_w    = nav.outerWidth(),
-         footer   = $("#footer");
+  $("#header .header .hide").click(function(){
+    $("#header .toggle").show();
+    $("#header .header").hide();
+  });
 
-    if (win_w > slides_w + nav_w) {
-      var left = (win_w - (slides_w+nav_w+50))/2;
-      slides.css("left", left);
-      footer.css("left", left);
-      nav.css("left", left + slides_w + 50);
-    } else {
-      slides.css("left", "0px");
-      nav.css("left", slides_w + 50);
-    }
+  $(window).resize( $.debounce( 100, resizePage) );
 
-  }
-
-  positionSlidesAndNav();
-
-  if ($.browser.firefox) {
-    $(window).resize( positionSlidesAndNav );
-  } else {
-    $(window).smartresize( positionSlidesAndNav );
-  }
-
+  // add the sparkle
   $(".stardust_sparks").everyTime(1000, function(){
     var el = $(this);
     if (el.css("opacity")!=1) {
