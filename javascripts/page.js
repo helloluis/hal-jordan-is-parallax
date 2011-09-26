@@ -350,11 +350,13 @@ $(function(){
 
   // toggler for header login form
   $("#header .toggle > a").click(function(){
+    if ($(window).scrollTop()>0) { $(window).scrollTop(0); }
     $("#header .toggle").hide();
     $("#header .header").show();
   });
 
   $("#header .header .hide").click(function(){
+    if ($(window).scrollTop()>0) { $(window).scrollTop(0); }
     $("#header .toggle").show();
     $("#header .header").hide();
   });
