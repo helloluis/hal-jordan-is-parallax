@@ -316,10 +316,12 @@ $(function(){
       }
 
       // resize individual slides
-      var new_slide_h = $(window).height() - (slides.outerHeight() - slides.height());
+      var new_slide_h     = $(window).height() - (slides.outerHeight() - slides.height()),
+          new_body_height = ($(window).height()*slides.length) + slides_c.offset().top + parseInt(slides_c.css('margin-bottom')) + footer.outerHeight();
 
       slides.height( new_slide_h );
-      parallax_cont.parallax( "resize", ($(window).height()*slides.length)+slides_c.offset().top );
+      
+      parallax_cont.parallax( "resize", new_body_height );
 
 
     };
