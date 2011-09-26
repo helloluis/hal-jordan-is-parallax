@@ -30,6 +30,7 @@ function SpaceScroller () {
           win_s = win.scrollTop();
       
         var adjusted  = ((win_s * (scr.track_h/scr.target_h)) - scr.handle_h) + scr.track_t;
+        console.log( adjusted );
         if (adjusted < 0) { 
           adjusted = 0; 
         } else if (adjusted > scr.track_h) {
@@ -90,10 +91,10 @@ function SpaceScroller () {
   this.move_to = function( a ) {
     
     var scr = this,    
-          t = a.position().top - scr.handle_h + scr.track_t;
+          t = a.position().top; // - scr.handle_h + scr.track_t;
 
     if (t < 0) { t = 0; }
-    //console.log(t);
+    //console.log( t );
     scr.handle.animate({ top : t }, 200, function(){
       scr.automated = false;
     });
