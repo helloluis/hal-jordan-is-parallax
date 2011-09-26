@@ -3,15 +3,76 @@ h1. Anatomy of a Landing Page, Episode I: The Phantom Parallax
 
 Eighteen months later, and here we all are.
 
-With our upcoming public beta release, it became apparent that Infinitely's home page should be revamped to something appropriately celebratory. It needed to be a real humdinger too, as this was both a culmination and an emergence for our small team. And for everyone else it would be the first thing they'd see of our web app, and you know what they say about first impressions.
+With our upcoming public beta release, it became apparent that Infinitely's home page deserved a celebratory makeover -- something to commemmorate both a culmination and emergence for our small team. And for the rest of the Internet, it would be the first thing they'd see of our web app, and you know what they say about first impressions.
 
-We had a rough idea what we wanted to do from the outset: Create a storytelling experience similar to "NikeBetterWorld.com":http://nikebetterworld.com or "Dentsu Network":http://dentsunetwork.com, but using our own space-themed design cues. The core technique employed on both these pages is of course called parallax, and one of the main challenges for our new page was to write our own jQuery plugin for implementing this effect.
+We had a rough idea what we wanted to do from the outset: Create an Javascript-powered interactive experience similar to "NikeBetterWorld.com":http://nikebetterworld.com or "Dentsu Network":http://dentsunetwork.com, but using our own space-themed design cues. The core technique employed on both these pages is of course called parallax, and one of the main challenges for our new page was to write our own jQuery plugin to implement this effect. (There are a few others, of course, but I'm pedantic that way.)
 
-Quick refresher for the uninitiated: parallax is the difference in the perceived position of an object when viewed from different lines of sight. As your viewpoint shifts from side to side, objects in the distance will appear to move slower than objects that are closer to you. When recreated properly in a layout, it gives viewers a sense of depth, and can be a compelling way to make a design really pop.
+Quick refresher for the uninitiated: parallax is the difference in the perceived position of an object when viewed from different lines of sight. As your viewpoint shifts from side to side, objects in the distance will appear to move slower than objects that are closer to you. When recreated properly in a layout, it gives viewers a sense of depth, and can be a compelling way to give a design some extra pop.
 
 So how does one go about creating the parallax effect in-browser?
 
-The most common method is to use the motion of scrolling as your "shifting viewpoint." As you scroll, objects in the background respond slower than objects in the foreground (i.e., your content), so you have to scroll further than normal before they exit the viewable screen area. In our case, our layout was composed of a background image of deep space, with planetary objects and asteroids absolutely-positioned in varying distances from the viewer.
+The most common method is to use the act of scrolling the window as your "shifting viewpoint." As you scroll, objects in the background move slower than objects in the foreground (i.e., your content), such that you have to scroll further than normal before they exit the viewport completely. So in theory, all you would need to do is recalculate the positions of each object as the window moves, and nudge them accordingly. Here's a bit of rough code to get our cogs turning:
+
+<code>
+$(window).scroll(function(){
+  var new_item_position_top = original_item_position_top - ($(window).scrollTop() * ( item_zindex / max_zindex ));
+  $(parallaxed_item).css({ top : new_item_position_top });
+});
+</code>
+
+So basically, every time the window is scrolled, the following things would happen:
+
+1. We calculate a new_item_position_top, which is based on the window's scroll position ($(window).scrollTop()), multiplied by the dividend of the item's z-index and the highest z-index of all parallaxed elements. 
+
+2. We then assign the calculated value to parallex_item's top attribute, via the css() function.
+
+All quite simple and straightforward. That should work, right?
+
+Well, not quite. There are a number of problems with this approach, the first being that $(window).scroll() is an intensely finicky browser event to work with. There's no real standard for how many times per second the scroll() event is triggered, and in my informal tests I found that by the time I had scrolled all the way down my test page in Safari, it had fired over 350 times. Considering it had taken me less than 3 seconds to scroll to the bottom, this was really excessive.
+
+The second, and probably more serious, problem was that all the elements being repositioned were stuttering like crazy as I scrolled, i.e., they would jump up several pixels before snapping to the position I had defined in new_item_position_top. This was a dealbreaker, and anything less than a silky smooth experience would simply have been unacceptable. 
+
+Initially, I thought it was performance-related, since 100 function calls per second per element was, admittedly, rather a lot. So my first attempt at resolving the issue was to limit the number of times the calculation was carried out, using a handy plugin called "ba-throttle-debounce":http://benalman.com/projects/jquery-throttle-debounce-plugin/. Now my code looked like this:
+
+<code>
+$(window).scroll( $.throttle(41, computePosition) );
+</code>
+
+(For illustrative purposes, let's just assume that computePosition's actual contents were similar to the expanded code described earlier.)Essentially, the $.throttle() wrapper ensures that its callbacks are triggered in n millisecond increments. In my case, I chose 41. A 41-millisecond gap means that computePosition() will get triggered about 24 times per second, and from an animation standpoint, this is usually the rate at which motions start to look smooth. (Movies are traditionally shot at 24 frames per second, for example.)
+
+Which, of course, didn't fix the stuttering problems, because that would've been too easy.
+
+At this point I was starting to headdesk something fierce. In retrospect, the cause of the problem seemed obvious, but back when I was building my plugin it felt completely opaque. 
+
+Here's what was actually happening, in slow-motion: First, the user would scroll the window, and the browser would react by shifting all the elements upwards, as it normally should. However, it would then run my script, receive new coordinates, and have to reposition some of the elements in accordance with those figures. Since all of this was happening within milliseconds of each other, it looked like stuttering. What it actually was though, was my script fighting the browser for control.
+
+Unfortunately, there was no way around this particular situation, except to throw out our original approach and try something else. 
+
+The solution I eventually went with was to turn all of my planets and asteroids into background images, thusly:
+
+<code>
+.parallax_image { 
+  background-image: url(/images/asteroids.png);
+  background-repeat: no-repeat;
+	background-position: 0% 0%; 
+	background-attachment: fixed; 
+	position: absolute; 
+	top : 0px;
+	left : 0px;
+	width : 100%;
+	height : 100%; 
+}
+</code>
+
+The idea was to programatically stretch each individual parallax_image so that it covered the entire document body, then shift its background-positions as the window was scrolled. The key to the whole solution was to set background-attachment to "fixed," which guaranteed that the browser would ignore these elements during scrolling, allowing us to do our thing undisturbed.
+
+
+
+
+
+
+
+In our case, our layout was composed of a background image of deep space, with planetary objects and asteroids absolutely-positioned in varying distances from the viewer.
 
 Fortunately, browsers already come with a way to establish pseudo-distance, with the CSS attribute z-index. Using z-index, we can define which of our objects are below others, or in our case, "furthest" from the viewer. For example, with the deep space background image as "z-index : 1", our asteroids as "z-index: 20", and our textual content as "z-index: 99", we know that our content will always be on top of either the deep space or the asteroids. Using these z-indexes as our basis, we could say that the deep space background moves at 1/99th the speed of our foreground, and the asteroids move at about a fifth. You could express the formula in pseudo-code thusly:
 
