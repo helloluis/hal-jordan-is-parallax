@@ -49,6 +49,7 @@ h1 { text-shadow: 0 0 3px #f90; }
 
 .main_slide h1 { margin-top:30px; }
 .main_slide p { padding:20px 20px 30px 20px;}
+#fan_page.main_slide p { padding:20px 20px 40px 20px;}
 .main_slide p { line-height:24px; display:block; font-size:15px; }
 .main_slide .sign_up_form { width:94%; height:300px; }
 
@@ -65,17 +66,26 @@ h1 { text-shadow: 0 0 3px #f90; }
 .slideshow_analytics .point-four { left: 608px; top: 84px; background:#fff;border:3px solid #666; height:3px; width:3px;}
 
 .slideshow_analytics .one { left: 20px; top: 205px; color: #333; font-size:60px; letter-spacing: -7px;}
-.slideshow_analytics .one-delta { left: 39px; top: 272px; color: #666; font-size:12px;letter-spacing: -1px; }
+.slideshow_analytics .one-delta { left: 39px; top: 276px; color: #666; font-size:12px;letter-spacing: -1px; }
 .slideshow_analytics .two {  left: 205px; top: 240px; color: #333; font-size: 20px; letter-spacing: -2px;}
-.slideshow_analytics .two-delta { left: 257px; top: 240px; color: #999;font-size: 12px; letter-spacing: 0; }
+.slideshow_analytics .two-delta { left: 265px; top: 244px; color: #999;font-size: 12px; letter-spacing: 0; }
 .slideshow_analytics .three { left: 288px; top: 240px; color: #333; font-size: 20px; letter-spacing: -2px; }
-.slideshow_analytics .three-delta { left: 330px; top: 240px;color: #999;font-size: 12px; letter-spacing: 0; }
+.slideshow_analytics .three-delta { left: 336px; top: 244px;color: #999;font-size: 12px; letter-spacing: 0; }
 .slideshow_analytics .four { left: 439px; top: 218px; color: #f90;font-size: 13px;  font-weight:bold;  letter-spacing: -1px; }
 .slideshow_analytics .five { left: 490px; top: 218px; color: #f90;font-size: 13px;  font-weight:bold; letter-spacing: -1px; }
 .slideshow_analytics .six { left: 563px; top: 218px; color: #f90;font-size: 13px;  font-weight:bold; letter-spacing: -1px; }
 .slideshow_analytics .seven { left: 440px; top: 276px; color: #f90;font-size: 13px;  font-weight:bold; letter-spacing: -1px;  }
 .slideshow_analytics .eight { left: 493px; top: 276px; color: #f90;font-size: 13px;  font-weight:bold; letter-spacing: -1px;  }
 .slideshow_analytics .nine { left: 563px; top: 276px; color: #f90;font-size: 13px; font-weight:bold; letter-spacing: -1px;  }
+
+.slideshow_buzz { background:#000 url(../images/slide_buzz_bg.jpg) no-repeat; width:660px; height:300px;  }
+.slideshow_buzz ul {  margin:0; padding: 0; list-style:none; background: rgba(0,0,0,0.5);}
+.slideshow_buzz ul li  {  width: 660px; height:300px; }
+.slideshow_buzz .dialog_twitter { background: transparent url(../images/slide_buzz_twitter.png) no-repeat; }
+.slideshow_buzz .dialog_facebook { background: transparent url(../images/slide_buzz_facebook.png) no-repeat; }
+.slideshow_buzz .dialog_youtube { background: transparent url(../images/slide_buzz_youtube.png) no-repeat; }
+.slideshow_buzz .dialog_flickr { background: transparent url(../images/slide_buzz_flickr.png) no-repeat; }
+
 
 a.next { background: transparent url(../images/next.png) no-repeat; width:85px; height:43px;  right: 20px; display: block ; position: absolute; text-transform: uppercase; padding-top: 5px; background-position: 30px -5px; margin-top: -15px; opacity:0.9; color: #eee;}
 a.bttn_sign_up { background-position: 125px -5px; width: 180px; margin-top:0px; }
