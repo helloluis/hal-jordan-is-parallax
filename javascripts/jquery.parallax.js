@@ -199,8 +199,6 @@
 
           tgt.css("background-attachment","fixed");
 
-          if (mod==para.max_z) { tgt.css("position","fixed") }
-
         });
       });
 
@@ -269,16 +267,12 @@
       
       if (this.orientation=='horizontal') {
 
-        if (mod != max_z) {
-          el.css("background-position", (parseInt(orig_left) - (win_left * (mod/max_z))) + "px " + orig_top );
-        }
+        el.css("background-position", (parseInt(orig_left) - (win_left * (mod/max_z))) + "px " + orig_top );
 
       } else if (this.orientation=='vertical') {
 
-        if (mod != max_z) {
-          var new_top = parseInt(orig_top) - (win_top * (z/max_z));
-          el.css("background-position", orig_left + " " + new_top + "px");
-        }
+        var new_top = parseInt(orig_top) - (win_top * (z/max_z));
+        el.css("background-position", orig_left + " " + new_top + "px");
 
       }
       

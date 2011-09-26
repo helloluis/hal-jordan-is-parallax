@@ -102,10 +102,10 @@ a.next:hover {opacity:1; color: #fff;}
 .asteroids5.bg { background-position: 45% 775px; }
 .asteroids6.bg { background-position: 95% 550px; }
 .asteroids7.bg { background-position: 80% 650px; }
-.moon.bg { background-position:25% 1650px; }
+.moon.bg { background-position:25% 1350px; }
 .stardust.bg { background-position: 20% 0px; }
 .stardust_sparks.bg { background-position: 20% 0px; }
-.space.bg { position:fixed; }
+.space.bg { background-position:0px 0px; }
 
 
 #footer { position:absolute; bottom:0px; background: transparent url(../images/earth.png) 0px 50px no-repeat; width:960px; height:150px; z-index:
