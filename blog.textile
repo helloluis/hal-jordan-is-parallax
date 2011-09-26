@@ -11,7 +11,7 @@ Quick refresher for the uninitiated: parallax is the difference in the perceived
 
 So how does one go about creating the parallax effect in-browser?
 
-The most common method is to use the act of scrolling the window as your "shifting viewpoint." As you scroll, objects in the background move slower than objects in the foreground (i.e., your content), such that you have to scroll further than normal before they exit the viewport completely. So in theory, all you would need to do is recalculate the positions of each object as the window moves, and nudge them accordingly. Here's a bit of rough code to get our cogs turning:
+The most common method is to use the act of scrolling the window as your "shifting viewpoint." As the window scrolls, objects in the background move slower than objects in the foreground (i.e., your content), such that the user has to scroll much further than normal before they exit the viewport completely. So in theory, all you would need to do is recalculate the positions of each object as the window moves, and nudge them accordingly. Here's a bit of rough code to get our cogs turning:
 
 <code>
 $(window).scroll(function(){
@@ -22,29 +22,39 @@ $(window).scroll(function(){
 
 So basically, every time the window is scrolled, the following things would happen:
 
-1. We calculate a new_item_position_top, which is based on the window's scroll position ($(window).scrollTop()), multiplied by the dividend of the item's z-index and the highest z-index of all parallaxed elements. 
+# We retrieve the window's scroll position ($(window).scrollTop()) and multiply it by the quotient of the item's z-index and the highest z-index of all parallaxed elements.
 
-2. We then assign the calculated value to parallex_item's top attribute, via the css() function.
+# We take the original_item_position_top, and subtract the result of our previous equation from it. The result is our new_item_position_top.
+
+# We then assign the calculated value to parallex_item's top attribute, via the css() function.
 
 All quite simple and straightforward. That should work, right?
 
 Well, not quite. There are a number of problems with this approach, the first being that $(window).scroll() is an intensely finicky browser event to work with. There's no real standard for how many times per second the scroll() event is triggered, and in my informal tests I found that by the time I had scrolled all the way down my test page in Safari, it had fired over 350 times. Considering it had taken me less than 3 seconds to scroll to the bottom, this was really excessive.
 
-The second, and probably more serious, problem was that all the elements being repositioned were stuttering like crazy as I scrolled, i.e., they would jump up several pixels before snapping to the position I had defined in new_item_position_top. This was a dealbreaker, and anything less than a silky smooth experience would simply have been unacceptable. 
+The second, and probably more serious, problem was that all the elements being repositioned were stuttering like crazy as I scrolled, i.e., they would jump up several pixels before snapping to the position I had defined in new_item_position_top. This was a dealbreaker, and anything less than a silky smooth experience would simply have been unacceptable for our home page. 
 
-Initially, I thought it was performance-related, since 100 function calls per second per element was, admittedly, rather a lot. So my first attempt at resolving the issue was to limit the number of times the calculation was carried out, using a handy plugin called "ba-throttle-debounce":http://benalman.com/projects/jquery-throttle-debounce-plugin/. Now my code looked like this:
+Initially, I thought it was performance-related, since over a hundred function calls per second per element was, admittedly, rather a lot. So my first attempt at resolving the issue involved limiting the number of times the calculations were carried out, using a handy plugin called "ba-throttle-debounce":http://benalman.com/projects/jquery-throttle-debounce-plugin/. Now my code looked like this:
 
 <code>
 $(window).scroll( $.throttle(41, computePosition) );
 </code>
 
-(For illustrative purposes, let's just assume that computePosition's actual contents were similar to the expanded code described earlier.)Essentially, the $.throttle() wrapper ensures that its callbacks are triggered in n millisecond increments. In my case, I chose 41. A 41-millisecond gap means that computePosition() will get triggered about 24 times per second, and from an animation standpoint, this is usually the rate at which motions start to look smooth. (Movies are traditionally shot at 24 frames per second, for example.)
+(For illustrative purposes, let's just assume that computePosition's actual contents were similar to the expanded code described earlier.)Essentially, the $.throttle() wrapper ensures that its callbacks are triggered in _n_ millisecond increments. In my case, I chose 41. A 41-millisecond gap means that computePosition() will get triggered about 24 times per second, and from an animation standpoint, this is usually the rate at which motions start to look smooth. (Movies are traditionally shot at 24 frames per second, for example.)
 
 Which, of course, didn't fix the stuttering problems, because that would've been too easy.
 
 At this point I was starting to headdesk something fierce. In retrospect, the cause of the problem seemed obvious, but back when I was building my plugin it felt completely opaque. 
 
-Here's what was actually happening, in slow-motion: First, the user would scroll the window, and the browser would react by shifting all the elements upwards, as it normally should. However, it would then run my script, receive new coordinates, and have to reposition some of the elements in accordance with those figures. Since all of this was happening within milliseconds of each other, it looked like stuttering. What it actually was though, was my script fighting the browser for control.
+Here's what was actually happening, in slow-motion: 
+
+# The user would scroll the window downwards, and the browser would react by shifting all the elements upwards, as it normally should. 
+
+# It would trigger the scroll() event, running my attached script.
+
+# The script would give the browser new coordinates, so now it would have to reposition some of the elements it had just moved.
+
+Since all of this was happening within milliseconds of each other, it looked like stuttering. What it actually was though, was my script fighting the browser for control.
 
 Unfortunately, there was no way around this particular situation, except to throw out our original approach and try something else. 
 
