@@ -12,7 +12,6 @@
 	<link rel="stylesheet" href="stylesheets/reset_h5bp.css">
 	<link rel="stylesheet" href="stylesheets/parallax_demo.css">
   <link href='http://fonts.googleapis.com/css?family=Voltaire' rel='stylesheet' type='text/css'>
-  <link href='http://fonts.googleapis.com/css?family=Marvel:400,700' rel='stylesheet' type='text/css'>
 	<link href='http://fonts.googleapis.com/css?family=Puritan:700,400' rel='stylesheet' type='text/css'>
 
 </head>
@@ -20,44 +19,19 @@
 
 <div id="main" class="parallax" style="z-index:1">
 
-  <div id="header">
-    <div class="toggle">Already a member? <a href="#!">Sign In to Infinite.ly</a></div>
-    <div class="header">
-      <div class="login">
-        <h1 id="logo"><a href="#">Infinite.ly</a></h1>
-        <form class="form">  
-            <p class="email">  
-              <label for="email" style="display:none">E-mail</label>  
-              <input type="text" name="email" id="email" placeholder="Email" />
-            </p>  
-            <p>
-            <input type="checkbox" name="remember" id="remember" />  
-            <label for="remember">Remember Me</label>  
-            </p>
-            <p class="password"> 
-              <label for="email" style="display:none">Password</label>   
-              <input type="password" name="password" id="password" placeholder="Password" /><p><a href="#">Forgot password?</a></p></p>  
-            <p class="submit"><input type="submit" value="Sign In" /> 
-              <span class="hide">Cancel</span>
-            </p>
-        </form> 
-      </div>
-    </div>
-  </div>
-
   <div id="sidebar" class="sidebar">
     <div id="scrollbar">
-      <div id="scrollbar-handle"></div>
+      <!-- <div id="scrollbar-handle"></div> -->
       <div id="scrollbar-track"></div>
       <div id="scrollbar-track-start"></div>
       <div id="scrollbar-track-end"></div>
     </div>
     <ul id="nav">
-      <li><a href="#/welcome" data-target="welcome" class="bttn bttn_welcome">Welcome</a></li>
-      <li><a href="#/buzz" data-target="buzz" class="bttn bttn_buzz">Buzz</a></li>
-      <li><a href="#/analytics" data-target="analytics" class="bttn bttn_analytics">Trends</a></li>
-      <li><a href="#/fan_page" data-target="fan_page" class="bttn bttn_fan_page">Fan Page</a></li>
-      <li><a href="#/sign_up" data-target="sign_up" class="bttn bttn_sign_up">Sign Up</a></li>
+      <li><a href="#welcome" class="bttn bttn_welcome">Welcome</a></li>
+      <li><a href="#usage" class="bttn bttn_buzz">Usage</a></li>
+      <li><a href="#options" class="bttn bttn_analytics">Options</a></li>
+      <li><a href="#methods" class="bttn bttn_fan_page">Methods</a></li>
+      <li><a href="#conclusion" class="bttn bttn_sign_up">Lastly</a></li>
     </ul>
   </div>
 
@@ -66,63 +40,88 @@
   <div class="parallax_target bg asteroids"></div>
   <div class="parallax_target bg asteroids2"></div>
   <div class="parallax_target bg asteroids3"></div>
-  
   <div class="parallax_target bg stardust"></div>
-  <!-- <div class="parallax_target bg stardust_sparks"></div> -->
   <div class="parallax_target bg planet"></div>
-  <div class="moon"></div>
+  <div class="parallax_target bg moon"></div>
 
   <ul class="main_slides">
     <li id="welcome" class="main_slide" title="Welcome">
       <div class="inner">
-        <h1>Welcome to Infinite.ly.</h1>
-        <p>For small business owners, the universe of social networks is a vast and mysterious place. 
-        We're here to make sure you don't get lost.<br /><a href="#/buzz" class="bttn bttn_buzz">Here's how</a>.</p>
+        <h1>Hal Jordan = Parallax</h1>
+        <p>Finally, a parallax plugin that understands the cosmic truth: that Parallax is and always will be <strong>Hal Jordan</strong>, not some nebulous giant that looks like what you'd get if you crossed Unicron with cotton candy. But I digress.</p>
+
+        <p>This plugin was originally written for use with the main landing page of my startup, <a href="http://infinite.ly
+        " target="_blank">Infinite.ly</a>, so this demo page uses many of the same graphical assets. My initial goal with writing HJ=P is to create a parallaxing system that uses z-indexes to judge distance, as this is already how web designers are layering their DOM elements on top of each other. It makes sense to leverage the CSS that's already there.
+        <a href="#usage">Here's how to use HJ=P on your pages</a>.</p>
       </div>
     </li>
     
-    <li id="buzz" class="main_slide" title="Buzz">
+    <li id="usage" class="main_slide" title="Usage">
       <div class="inner">
-        <h2>We Connect You with Your Audience</h2>
-        <p>Talking to your customers and fans has never been easier. Our buzz grid aggregates all your social network feeds in a single, filterable page. Our composer lets you easily schedule your posts to Twitter and Facebook, from one central place. And our aggregated address book (<em>coming soon!</em>) lists every fan, follower, friend or contact across all your accounts. <br />
-        <a href="#/analytics" class="bttn bttn_analytics next">Next</a>
+        <h2>Add the script to your page, somewhere, wherever.</h2>
+        <p>The only requirement is jQuery itself, but you knew that already, didn't you?
+        <code>
+  &lt;script language="Javascript" src="/javascripts/jquery.js"&gt;&lt;/script&gt;
+  &lt;script language="Javascript" src="/javascripts/jquery.hal.jordan.is.parallax.min.js"&gt;&lt;/script&gt;
+        </code>
         </p>
-        <div class="slideshow"></div>
+        <p>Then it's just a matter of attaching $.parallax to your main container, most likely $('body'), thusly:
+        <code>
+  $('body').parallax({ targets : ".parallax_target" });
+        </code>
+        </p>
+        <p>As you can probably guess, the <strong>targets</strong> parameter is a jQuery selector that enables the parallax effect for every element it matches. Any valid jQuery selector should work here.<br />
+        HJ=P works by looking at the individual z-indexes of all the target elements, and slowing down their scrolling speed based on this. Specifically: <strong>the lower a z-index is, the "further away" it is, therefore, the slower it should move</strong>. A target with a z-index of 2 will be 10x slower than a target with a z-index of 20.
+        </p>
+        <p>You can see the effect on this page's background, with the planets, asteroids and space background all moving at different speeds as the window is scrolled up and down. In this scenario, the furthest object is obviously the space background, with the asteroids being the closest. (Well, technically, the content you're reading is the closest, since that's on the highest z-index, but the parallax plugin doesn't touch that.)</p>
+        <p><a href="#options">Check out other options</a>.</p>
       </div>
     </li>
 
-    <li id="analytics" class="main_slide" title="Trends">
+    <li id="options" class="main_slide" title="Options">
       <div class="inner">
-        <h2>We Track the Trends</h2>
-        <p>Getting hard numbers on your performance is a snap. All the mentions, reposts, comments and ratings about your brand is available for download and archiving. You can even monitor important buzz topics and get a real-time view of what people are saying about them online.<br/>
-        <a href="#/fan_page" class="bttn bttn_fan_page next">Next</a></p>
-        <div class="slideshow slideshow_analytics">
-          <div id="line_graph" class="animated_scroll_target line_graph" data-type="line_graph"></div>
-          <!-- <span data-type="graphic" class="animated_scroll_target point-one">&nbsp;</span>
-          <span data-type="graphic" class="animated_scroll_target point-two">&nbsp;</span>
-          <span data-type="graphic" class="animated_scroll_target point-three">&nbsp;</span>
-          <span data-type="graphic" class="animated_scroll_target point-four">&nbsp;</span> -->
-          <span data-type="number" data-max="3072" data-step="59" data-current="387" class="animated_scroll_target one">989</span>
-          <span data-type="number" data-max="23" data-step="1" data-current="0" class="animated_scroll_target one-delta">0</span>
-          <span data-type="number" data-max="2162" data-step="37" data-current="459" class="animated_scroll_target two">459</span>
-          <span data-type="number" data-max="89" data-step="2" data-current="0" class="animated_scroll_target two-delta">0</span>
-          <span data-type="number" data-max="132" data-step="2" data-current="0" class="animated_scroll_target three">0</span>
-          <span data-type="number" data-max="12" data-step="1" data-current="0" class="animated_scroll_target three-delta">0</span>
-          <span data-type="number" data-max="10" data-step="1" data-current="0" class="animated_scroll_target four">0</span>
-          <span data-type="number" data-max="12" data-step="1" data-current="0" class="animated_scroll_target five">0</span>
-          <span data-type="number" data-max="327" data-step="4" data-current="0" class="animated_scroll_target six">0</span>
-          <span data-type="number" data-max="17" data-step="1" data-current="0" class="animated_scroll_target seven">0</span>
-          <span data-type="number" data-max="35" data-step="1" data-current="0" class="animated_scroll_target eight">0</span>
-          <span data-type="number" data-max="189" data-step="3" data-current="0" class="animated_scroll_target nine">0</span>
-        </div>
+        <h2>Options</h2>
+        <p>
+          Here's the parallax call again, but with all the options:
+<code>
+  $('body').parallax({
+    targets      : ".parallax_target",
+    orientation  : "vertical",
+    highest_z    : 99,
+    lowest_z     : 1,
+    force_height : 3500,
+    force_width  : 1000
+  });
+</code>
+        </p>
+        <dl>
+          <dt><strong>targets</strong>, possible : <em>any valid jQuery selector, e.g., $(".content, .article")</em></dt>
+          <dd>Just because you can use any valid jQuery selector, doesn't mean you necessarily have to be cute here. It's usually better to simply add a single class to all of the elements you want to apply the plugin to, and just select them that way.</dd>
+          <dt><strong>orientation</strong>, possible : <em>"vertical", "horizontal"</em></dt>
+          <dd></dd>
+          <dt><strong>highest_z</strong>, possible : <em>any integer</em></dt>
+          <dd></dd>
+          <dt><strong>lowest_z</strong>, possible : <em>any integer</em></dt>
+          <dd></dd>
+          <dt><strong>force_height</strong>, possible : <em>any integer, greater than your current container height</em></dt>
+          <dd></dd>
+          <dt><strong>force_width</strong>, possible : <em>any integer, greater than your current container width</em></dt>
+          <dd></dd>
+        </dl>
       </div>
     </li>
 
-    <li id="fan_page" class="main_slide" title="Fan Page">
-      <div class="inner"><h2>We Build Your Social Presence</h2>
+    <li id="methods" class="main_slide" title="Methods">
+      <div class="inner">
 
-        <p>Get that fan page that you always wanted, no design skills necessary. Infinite.ly's fan pages are universal &mdash; they connect to your Facebook fan page, Twitter feed, Flickr stream and Youtube channel, so you can use it as the hub for all of your business's social networking efforts.<br />
-        <a href="#/sign_up" class="bttn bttn_sign_up next">Get started today</a></p>
+        <h2>Methods</h2>
+
+        <p></p>
+
+        <dl>
+          <dt>scroll_to</dt>
+          <dd></dd>
+        </dl>
 
         <div class="slideshow"></div>
       </div>
@@ -137,41 +136,15 @@
     </li>
   </ul>
   
-  <div id="footer">
-    <div class="share_tools_container">
-      <div class="share_tools twitter">
-        <a href="https://twitter.com/share" class="twitter-share-button" data-text="Navigate the universe of social networks with Infinite.ly (@socialinfinity)" data-count="horizontal" data-via="socialinfinity" data-related="helloluis:Co-founder and architect">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
-      </div>
-      <div class="share_tools facebook">
-        <div id="fb-root"></div>
-          <script>(function(d, s, id) {
-            var js, fjs = d.getElementsByTagName(s)[0];
-            if (d.getElementById(id)) {return;}
-            js = d.createElement(s); js.id = id;
-            js.src = "http://connect.facebook.net/en_US/all.js#xfbml=1";
-            fjs.parentNode.insertBefore(js, fjs);
-          }(document, 'script', 'facebook-jssdk'));</script>
-        <div class="fb-like" data-href="http://infinite.ly" data-send="false" data-layout="button_count" data-width="80" data-show-faces="false" data-action="like" data-colorscheme="dark" data-font="lucida grande"></div>
-      </div>
-    </div>
-    <!-- <div class="social"> -->
-      <!-- <a href="#" class="social_icons twitter">Twitter</a> -->
-      <!-- <a href="#" class="social_icons facebook">Facebook</a> -->
-    <!-- </div> -->
-  </div>
+  <div id="footer"></div>
 
 </div>
 
 
 <script language="Javascript" src="javascripts/jquery.js"></script>
-<script language="Javascript" src="javascripts/jquery-ui-1.8.16.custom.min.js"></script>
-<script language="Javascript" src="javascripts/jquery.parallax.js"></script>
-<script language="Javascript" src="javascripts/jquery.imgpreload.js"></script>
-<script language="Javascript" src="javascripts/jquery.inview.js"></script>
-<script language="Javascript" src="javascripts/jquery.svg.min.js"></script>
-<script language="Javascript" src="javascripts/jquery.svganim.min.js"></script>
-<script language="Javascript" src="javascripts/jquery-timers.js"></script>
-<script language="Javascript" src="javascripts/page.js"></script>
+<script language="Javascript" src="javascripts/jquery.ba-throttle-debounce.js"></script>
+<script language="Javascript" src="javascripts/jquery.hal.jordan.is.parallax.js"></script>
+<script language="Javascript" src="javascripts/landing.js"></script>
 
 </body>
 </html>
