@@ -4,7 +4,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Navigate Your Social Network Universe with Infinite.ly</title>
+	<title>Hal Jordan = Parallax | A jQuery Plugin by @helloluis</title>
 	
 	<meta name="generator" content="TextMate http://macromates.com/">
 	<meta name="author" content="luis buenaventura (@helloluis), infinite.ly">
@@ -21,7 +21,6 @@
 
   <div id="sidebar" class="sidebar">
     <div id="scrollbar">
-      <!-- <div id="scrollbar-handle"></div> -->
       <div id="scrollbar-track"></div>
       <div id="scrollbar-track-start"></div>
       <div id="scrollbar-track-end"></div>
@@ -48,10 +47,9 @@
     <li id="welcome" class="main_slide" title="Welcome">
       <div class="inner">
         <h1>Hal Jordan = Parallax</h1>
-        <p>Finally, a parallax plugin that understands the cosmic truth: that Parallax is and always will be <strong>Hal Jordan</strong>, not some nebulous giant that looks like what you'd get if you crossed Unicron with cotton candy. But I digress.</p>
-
-        <p>This plugin was originally written for use with the main landing page of my startup, <a href="http://infinite.ly
-        " target="_blank">Infinite.ly</a>, so this demo page uses many of the same graphical assets. My initial goal with writing HJ=P is to create a parallaxing system that uses z-indexes to judge distance, as this is already how web designers are layering their DOM elements on top of each other. It makes sense to leverage the CSS that's already there.
+        <p><img src="images/hal_jordan_parallax.jpg" class='parallax_splash' />
+        This plugin was originally written for use with the main landing page of my startup, <a href="http://infinite.ly
+        " target="_blank">Infinite.ly</a>, so this demo page uses many of the same graphical assets. My initial goal with writing HJ=P was to create a parallaxing system that uses z-indexes to judge the relative distance between objects, as this is already how web designers are layering their DOM elements on top of each other. It makes sense to leverage the CSS that's already there.
         <a href="#usage">Here's how to use HJ=P on your pages</a>.</p>
       </div>
     </li>
@@ -62,12 +60,14 @@
         <p>The only requirement is jQuery itself, but you knew that already, didn't you?
         <code>
   &lt;script language="Javascript" src="/javascripts/jquery.js"&gt;&lt;/script&gt;
-  &lt;script language="Javascript" src="/javascripts/jquery.hal.jordan.is.parallax.min.js"&gt;&lt;/script&gt;
+  &lt;script language="Javascript" src="/javascripts/jquery.hal.jordan.is.parallax.js"&gt;&lt;/script&gt;
         </code>
         </p>
-        <p>Then it's just a matter of attaching $.parallax to your main container, most likely $('body'), thusly:
+        <p>Then it's just a matter of attaching $.parallax to your main container (most likely $('body')) inside a document.ready() block, thusly:
         <code>
-  $('body').parallax({ targets : ".parallax_target" });
+  $(function(){
+    $('body').parallax({ targets : ".parallax_target" });  
+  });
         </code>
         </p>
         <p>As you can probably guess, the <strong>targets</strong> parameter is a jQuery selector that enables the parallax effect for every element it matches. Any valid jQuery selector should work here.<br />
@@ -75,11 +75,13 @@
         </p>
         <p>You can see the effect on this page's background, with the planets, asteroids and space background all moving at different speeds as the window is scrolled up and down. In this scenario, the furthest object is obviously the space background, with the asteroids being the closest. (Well, technically, the content you're reading is the closest, since that's on the highest z-index, but the parallax plugin doesn't touch that.)</p>
         <p><a href="#options">Check out other options</a>.</p>
+
       </div>
     </li>
 
     <li id="options" class="main_slide" title="Options">
       <div class="inner">
+
         <h2>Options</h2>
         <p>
           Here's the parallax call again, but with all the options:
@@ -108,6 +110,7 @@
           <dt><strong>force_width</strong>, possible : <em>any integer, greater than your current container width</em></dt>
           <dd></dd>
         </dl>
+
       </div>
     </li>
 
@@ -127,24 +130,22 @@
       </div>
     </li>
 
-    <li id="sign_up" class="main_slide" title="Sign Up">
+    <li id="lastly" class="main_slide" title="Lastly">
       <div class="inner">
-        <h2>And It's Free, Infinitely!</h2>
-        <p>Our starter accounts are free to try, forever. For more serious folk, our premium services start at just $29/month.</p>
-        <div class="sign_up_form"></div>
+        <h2>Lastly.</h2>
+        <p>Check out the production version of this plugin at <a href="http://infinite.ly">Infinite.ly</a>, and feel free to <a href="http://github.com/helloluis/jQuery-Parallax">fork it on Github</a>.</p>
       </div>
     </li>
   </ul>
-  
-  <div id="footer"></div>
 
 </div>
 
 
 <script language="Javascript" src="javascripts/jquery.js"></script>
-<script language="Javascript" src="javascripts/jquery.ba-throttle-debounce.js"></script>
+<script language="Javascript" src="javascripts/debug.js"></script>
 <script language="Javascript" src="javascripts/jquery.hal.jordan.is.parallax.js"></script>
 <script language="Javascript" src="javascripts/landing.js"></script>
+
 
 </body>
 </html>

@@ -79,6 +79,10 @@
   };
 
 
+  $.Mobile = ( $('body').hasClass('webkit-mobile') || (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) );
+  $.iPad   = (navigator.userAgent.match(/iPad/i)) ? true : false;
+  $.iPad   = true;
+
   // this is a fix for IE, which combines background-position-x and background-position-y 
   // into a single background-position value, like other, better browsers.
   // THIS ISN'T CHAINABLE
@@ -122,6 +126,7 @@
     highest_z            : false,
     force_width          : false,
     force_height         : false,
+    enable_for_ipad      : true, // very very experimental, enable at your own risk
     targets              : []
   };
   
@@ -139,7 +144,9 @@
 
       this.scrolled     = false;
       this.blocking     = false;
-      
+
+      this.enable_for_ipad = this.options.enable_for_ipad;
+
       this.animate      = this.options.animate_intro; 
 
       this.orientation  = this.options.orientation;
@@ -147,7 +154,7 @@
       
       this.highest_z    = this.options.highest_z;
       this.lowest_z     = this.options.lowest_z;
-      // integer
+      // integers
       // the difference between min_z/max_z and lowest_z/highest_z is that the former is the largest z-index that we can find amongst
       // our possible target elements, whereas the latter is a user-defined, purely arbitrary value. highest_z is useful
       // for defining extreme differences in depth between the parallaxed elements and the foreground. so for example,
@@ -168,8 +175,8 @@
       }
  
       // store the current scrollTop or scrollLeft, depending on which orientation the user chose
-      this.scrollTop    = 0;
-      this.scrollLeft   = 0;
+      this.scrollTop    = $(window).scrollTop();
+      this.scrollLeft   = $(window).scrollLeft();
 
       // store the current direction the user is scrolling. if downwards, then downwards=true
       this.downwards    = null;
@@ -178,7 +185,7 @@
       this.max_width    = 0;
       this.max_height   = 0; 
       
-      // this is the slowest an element will move in response to a window.scroll(), i.e., 1/100th of a pixel
+      // this is the slowest an element will move in response to a window.scroll(), i.e., 1/1000th of a pixel
       this.min_modifier = 1;
       this.max_modifier = 999;
 
@@ -196,7 +203,6 @@
 
       
       var resizeBg = function() {
-        debug.log("initial resize");
         para._resize_bg();
       };
 
@@ -206,36 +212,29 @@
 
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
-      $.each(para.targets, function(idx, target){
-        $(target).each(function(){
-          
-          var tgt    = $(this),
-              t      = tgt.backgroundPosition(),
-              tt     = t.split(" "),
-              top    = tt[1],
-              left   = tt[0],
-              zindex = parseInt(tgt.css("z-index")),
-              mod    = para._calculate_modifier(zindex);
-          
-          para.target_data.push([ top, left, mod, zindex ]);
-
-          tgt.css("background-attachment","fixed");
-
-        });
-      });
+      if ($.iPad && para.enable_for_ipad) {
+        para._setup();
+      } else {
+        para._setup();
+      }
+      
+      var manualScroll = function(){
+        para._move_all($(this));
+      };
 
       // both the throttled manualScroll and the (debounced) smartresize do similarly limited actions
       // manualScroll only fires every 50ms, while resizeBg fires after 100ms has passed
       // this is to ensure that the browser doesn't go nuts triggering scroll() and resize() events
       // over and over again with very little actual effect on the layout
       var initWindowScroll = function(){
-        $(window).scroll( $.throttle(41, manualScroll) ).resize( $.debounce(100, resizeBg) );
+        if ($.iPad && para.enable_for_ipad===true) {
+          para.element.bind('touchmove', $.throttle(41, manualScroll) ); 
+        } else {
+          $(window).scroll( $.throttle(41, manualScroll) ).resize( $.debounce(100, resizeBg) );  
+        }
       };
 
-      var manualScroll = function(){
-        para._move_all($(this));
-      };
-
+      
       if (this.animate) {
         this._animate_intro( initWindowScroll );
       } else {
@@ -273,8 +272,15 @@
           win_left = win.scrollLeft();
 
       for (var i=0; i < para.targets.length; i+=1) {
-        para._move_by( i, para.targets[i], win_top, win_left );
+        if ($.iPad && para.enable_for_ipad) {
+          para._move_by_for_ipad( i, para.targets[i], win_top, win_left );
+        } else {
+          para._move_by( i, para.targets[i], win_top, win_left );  
+        }
       }
+
+      para.scrollTop  = win_top;
+      para.scrollLeft = win_left;
 
     },
 
@@ -294,7 +300,7 @@
       
       if (this.orientation=='horizontal') {
 
-        el.backgroundPosition( (parseInt(orig_left) - (win_left * (mod/max_z))) + "px " + orig_top );
+        el.backgroundPosition( (parseInt(orig_left) - (win_left * (z/max_z))) + "px " + orig_top );
 
       } else if (this.orientation=='vertical') {
 
@@ -303,6 +309,51 @@
 
       }
       
+    },
+
+    _move_by_for_ipad : function( idx, el, win_top, win_left, css_attrib ) {
+      
+      var orig_top  = this.target_data[idx][0],
+          orig_left = this.target_data[idx][1],
+          mod       = this.target_data[idx][2],
+          z         = this.target_data[idx][3],
+          max_z     = this.highest_z ? this.highest_z : this.max_z;
+
+      if (this.orientation=='vertical') {
+        // var new_top = parseInt(orig_top) + (win_top * (mod/max_z));
+        // debug.log( win_top, orig_top, new_top );
+        // el.css({ "-webkit-transform" : "translate3d(0px," + new_top + "px,0px)" });
+        var new_top = parseInt(orig_top) + (win_top * (mod/max_z));//(win_top + parseInt(orig_top));
+        el.backgroundPosition(orig_left + " " + new_top + "px");
+      }
+
+    },
+
+    _setup : function() {
+      var para = this;
+      $.each(para.targets, function(idx, target){
+        $(target).each(function(){
+          
+          var tgt    = $(this),
+              tt     = tgt.backgroundPosition(),
+              ttt    = tt.split(" "),
+              top    = ttt[1],
+              left   = ttt[0],
+              zindex = parseInt(tgt.css("z-index")),
+              mod    = para._calculate_modifier(zindex);
+          
+          para.target_data.push([ top, left, mod, zindex ]);
+
+          tgt.css("background-attachment","fixed");
+
+        });
+      });
+    },
+
+    _setup_for_ipad : function() {
+      var para = this;
+      
+
     },
 
     //
