@@ -118,14 +118,14 @@ a.next:hover {opacity:1; color: #fff;}
 .space.bg { background-position:0px 0px; }
 
 
-#footer { position:absolute; bottom:0px; background: transparent url(../images/earth.png) 0px 50px no-repeat; width:960px; height:150px; z-index:
-100; overflow:hidden; }
-#footer .share_tools_container { margin:20px auto 0 auto; width:230px; overflow:hidden; }
+#footer { position:absolute; bottom:0px; background: transparent url(/images/landing-2012/earth.png) 50% 100% no-repeat; width:800px;height:150px; z-index: 99; overflow:hidden; }
+#footer .share_tools_container { position:absolute; bottom:100px; left:300px; width:230px; }
+#footer .copyright {margin:0 -100px 10px; font-size:92%; }
 #footer .share_tools { float:left; }
 #footer .share_tools.twitter { margin-left:5px; width:110px; margin-right:20px; }
 #footer .share_tools.facebook { width: 90px }
 #footer .social { margin:20px auto; width: 80px; height:25px; }
-#footer .social_icons { background: transparent url(../images/social.png) no-repeat; text-indent: -9999px; width:25px; display: block; float: left; margin-right: 10px; padding-top: 8px; }
+#footer .social_icons { background: transparent url(/images/landing-2012/social.png) no-repeat; text-indent: -9999px; width:25px; display: block; float: left; margin-right: 10px; padding-top: 8px; }
 #footer .social_icons.twitter { background-position: -2px -2px !important; margin-left:10px; }
 #footer .social_icons.facebook { background-position: -37px -2px !important; }
 #footer .social_icons.twitter:hover { background-position: -2px -30px !important; }

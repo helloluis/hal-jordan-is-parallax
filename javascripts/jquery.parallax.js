@@ -13,7 +13,7 @@
 */
 
 (function( window, $, undefined ){
-  
+
  /*!
   * jQuery throttle / debounce - v1.1 - 3/7/2010
   * http://benalman.com/projects/jquery-throttle-debounce-plugin/
@@ -25,7 +25,7 @@
   
   var $ = window.jQuery || window.Cowboy || ( window.Cowboy = {} ),
     jq_throttle;
-  
+
   $.throttle = jq_throttle = function( delay, no_trailing, callback, debounce_mode ) {
 
     var timeout_id,
@@ -79,6 +79,32 @@
   };
 
 
+  $.Mobile = ( $('body').hasClass('webkit-mobile') || (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) );
+  $.iPad   = (navigator.userAgent.match(/iPad/i));
+
+
+  // this is a fix for IE, which combines background-position-x and background-position-y 
+  // into a single background-position value, like other, better browsers.
+  // THIS ISN'T CHAINABLE
+  $.fn.backgroundPosition = function(new_pos) {
+    var p = $(this).css('background-position');
+    if (new_pos!==undefined) {
+      var t = new_pos.split(" ");
+      if (typeof(p)==='undefined') {
+        $(this).css('background-position-x', t[0]);
+        $(this).css('background-position-y', t[1]);
+      } else {
+        $(this).css('background-position', new_pos);
+      }
+    } else {
+      if (typeof (p)==='undefined') {
+        return $(this).css('background-position-x') + ' ' + $(this).css('background-position-y');
+      } else {
+        return p;
+      }
+    }
+  };
+
 
   /*
    *
@@ -90,7 +116,6 @@
   $.Parallax = function( options, element ){
     this.element = $( element );
     this._create( options );
-    // this._init();
   };
   
   
@@ -101,6 +126,7 @@
     highest_z            : false,
     force_width          : false,
     force_height         : false,
+    enable_for_ipad      : false, // very very experimental, enable at your own risk
     targets              : []
   };
   
@@ -118,7 +144,11 @@
 
       this.scrolled     = false;
       this.blocking     = false;
-      
+
+      this.enable_for_ipad = this.options.enable_for_ipad;
+
+      this.animate      = this.options.animate_intro; 
+
       this.orientation  = this.options.orientation;
       // 'vertical' or 'horizontal'
       
@@ -155,7 +185,7 @@
       this.max_width    = 0;
       this.max_height   = 0; 
       
-      // this is the slowest an element will move in response to a window.scroll(), i.e., 1/100th of a pixel
+      // this is the slowest an element will move in response to a window.scroll(), i.e., 1/1000th of a pixel
       this.min_modifier = 1;
       this.max_modifier = 999;
 
@@ -180,15 +210,13 @@
 
       para.element.height( para.max_height );
 
-      // console.log("z-index min & max", para.min_z, para.max_z);
-
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
       $.each(para.targets, function(idx, target){
         $(target).each(function(){
           
           var tgt    = $(this),
-              t      = tgt.css("background-position"),
+              t      = tgt.backgroundPosition(),
               tt     = t.split(" "),
               top    = tt[1],
               left   = tt[0],
@@ -202,18 +230,23 @@
         });
       });
 
-      //console.log(this.target_data);
+      // both the throttled manualScroll and the (debounced) smartresize do similarly limited actions
+      // manualScroll only fires every 50ms, while resizeBg fires after 100ms has passed
+      // this is to ensure that the browser doesn't go nuts triggering scroll() and resize() events
+      // over and over again with very little actual effect on the layout
+      var initWindowScroll = function(){
+        $(window).scroll( $.throttle(41, manualScroll) ).resize( $.debounce(100, resizeBg) );
+      };
 
       var manualScroll = function(){
         para._move_all($(this));
       };
 
-      
-      // both the throttled manualScroll and the (debounced) smartresize do similarly limited actions
-      // manualScroll only fires every 50ms, while resizeBg fires after 100ms has passed
-      // this is to ensure that the browser doesn't go nuts triggering scroll() and resize() events
-      // over and over again with very little actual effect on the layout
-      $(window).scroll( $.throttle(41, manualScroll) ).resize( $.debounce(100, resizeBg) );      
+      if (this.animate) {
+        this._animate_intro( initWindowScroll );
+      } else {
+        initWindowScroll();
+      }   
 
     },
 
@@ -246,7 +279,11 @@
           win_left = win.scrollLeft();
 
       for (var i=0; i < para.targets.length; i+=1) {
-        para._move_by( i, para.targets[i], win_top, win_left );
+        if ($.iPad && para.options.enable_for_ipad) {
+          para._move_by_for_ipad( i, para.targets[i], win_top, win_left );
+        } else {
+          para._move_by( i, para.targets[i], win_top, win_left );  
+        }
       }
 
     },
@@ -254,7 +291,7 @@
     // the higher a modifier is, the more pronounced the parallax effect is.
     // the parallax effect is achieved by "slowing down" an element's movement
     // across the screen as the window is scrolled. very distant objects 
-    // (with the greatest amount of parallax) will take a very long time to disappear,
+    // (with the greatest amount of modification) will take a very long time to disappear,
     // while the closest object (with the lowest parallax modifier of "1") 
     // will be scrolled off-screen as normal.
     _move_by : function( idx, el, win_top, win_left, css_attrib ) {
@@ -267,15 +304,21 @@
       
       if (this.orientation=='horizontal') {
 
-        el.css("background-position", (parseInt(orig_left) - (win_left * (mod/max_z))) + "px " + orig_top );
+        el.backgroundPosition( (parseInt(orig_left) - (win_left * (z/max_z))) + "px " + orig_top );
 
       } else if (this.orientation=='vertical') {
 
         var new_top = parseInt(orig_top) - (win_top * (z/max_z));
-        el.css("background-position", orig_left + " " + new_top + "px");
+        el.backgroundPosition( orig_left + " " + new_top + "px");
 
       }
       
+    },
+
+    _move_by_for_ipad : function( idx, el, win_top, win_left, css_attrib ) {
+      
+
+
     },
 
     //
@@ -323,18 +366,30 @@
       }
     },
 
-    resize : function( new_h ) {
+    // when the container element is resized, we need to recompute the sizes of all the
+    // parallax elements so they can still cover the entirety of the page. we do this by
+    // setting the force_height and/or force_width options to the new height or width,
+    // then firing the private _resize_bg function
+    resize : function( new_h, new_w ) {
       
-      this.options.force_height = new_h;
-      this.element.height( new_h );
-      this._resize_bg();
-
+      if (new_h!==undefined) {
+        this.options.force_height = new_h;  
+      }
+      
+      if (new_w!==undefined) {
+        this.options.force_width = new_w;  
+      }
+      
+      if (new_h || new_w) {
+        this._resize_bg();  
+      }
+      
     },
 
     _resize_bg : function() {
 
       var para = this;
-            
+      
       if (!para.options.force_width) {
         para.max_width  = $('body').width() > $(window).width() ? $('body').width() : $(window).width();  
       } else {
@@ -346,7 +401,7 @@
       } else {
         para.max_height = para.options.force_height;
       }
-
+      debug.log( $('body').width(), $(window).width(), para.max_width, para.max_height );
       $.each(para.targets, function(idx, target){
         $(this).width( para.max_width ).height( para.max_height );
       });
@@ -434,5 +489,5 @@
     }
     return this;
   };
-  
+
 })( window, jQuery );
