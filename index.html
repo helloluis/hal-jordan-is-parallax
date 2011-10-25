@@ -1,1 +1,166 @@
-My GitHub Page
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>Hal Jordan = Parallax | A jQuery Plugin by @helloluis</title>
+	
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="luis buenaventura (@helloluis), infinite.ly">
+	
+	<link rel="stylesheet" href="stylesheets/reset_h5bp.css">
+	<link rel="stylesheet" href="stylesheets/parallax_demo.css">
+    <link href='http://fonts.googleapis.com/css?family=Voltaire' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Puritan:700,400' rel='stylesheet' type='text/css'>
+
+</head>
+<body class="parallax">
+
+<div id="debug"></div>
+
+<div id="main" class="parallax" style="z-index:1">
+  
+  <div id="sidebar" class="sidebar">
+    <div id="scrollbar">
+      <div id="scrollbar-track"></div>
+      <div id="scrollbar-track-start"></div>
+      <div id="scrollbar-track-end"></div>
+    </div>
+    <ul id="nav">
+      <li><a href="#welcome" class="bttn bttn_welcome">Welcome</a></li>
+      <li><a href="#usage" class="bttn bttn_buzz">Usage</a></li>
+      <li><a href="#options" class="bttn bttn_analytics">Options</a></li>
+      <li><a href="#methods" class="bttn bttn_fan_page">Methods</a></li>
+      <li><a href="#conclusion" class="bttn bttn_sign_up">Lastly</a></li>
+    </ul>
+  </div>
+
+  <div class="parallax_target bg space"></div>
+  <div class="parallax_target bg planet2"></div>
+  <div class="parallax_target bg asteroids"></div>
+  <div class="parallax_target bg asteroids2"></div>
+  <div class="parallax_target bg asteroids3"></div>
+  <div class="parallax_target bg stardust"></div>
+  <div class="parallax_target bg planet"></div>
+  <div class="parallax_target bg moon"></div>
+
+  <ul class="main_slides">
+    <li id="welcome" class="main_slide" title="Welcome">
+      <div class="inner">
+        <h1>Hal Jordan = Parallax</h1>
+        <p><img src="images/hal_jordan_parallax.jpg" class='parallax_splash' />
+        This plugin was originally written for the landing page of my startup, <a href="http://infinite.ly
+        " target="_blank">Infinite.ly</a>, so this demo uses many of the same graphical assets. My initial goal with writing HJ=P was to create a parallaxing system that uses z-indexes to judge the relative distance between objects, as this is already how web designers are layering their DOM elements on top of each other. It makes sense to leverage the CSS that's already there.
+        <a href="#usage">Here's how to use HJ=P on your pages</a>.</p>
+      </div>
+    </li>
+    
+    <li id="usage" class="main_slide" title="Usage">
+      <div class="inner">
+        <h2>Add the script to your page, somewhere, wherever.</h2>
+        <p>The only requirement is jQuery itself, but you knew that already, didn't you?
+        <code>
+  &lt;script language="Javascript" src="/javascripts/jquery.js"&gt;&lt;/script&gt;
+  &lt;script language="Javascript" src="/javascripts/jquery.hal.jordan.is.parallax.js"&gt;&lt;/script&gt;
+        </code>
+        </p>
+        <p>Then it's just a matter of attaching $.parallax to your main container (most likely $('body')) inside a document.ready() block, thusly:
+        <code>
+  $(function(){
+    $('body').parallax({ targets : ".parallax_target" });  
+  });
+        </code>
+        </p>
+        <p>As you can probably guess, the <strong>targets</strong> parameter is a jQuery selector that enables the parallax effect for every element it matches. Any valid jQuery selector should work here.<br />
+        HJ=P works by looking at the individual z-indexes of all the target elements, and slowing down their scrolling speed based on this. Specifically: <strong>the lower a z-index is, the "further away" it is, therefore, the slower it should move</strong>. A target with a z-index of 2 will be 10x slower than a target with a z-index of 20.
+        </p>
+        <p>You can see the effect on this page's background, with the planets, asteroids and space background all moving at different speeds as the window is scrolled up and down. In this scenario, the furthest object is obviously the space background, with the asteroids being the closest. (Well, technically, the content you're reading is the closest, since that's on the highest z-index, but the parallax plugin doesn't touch that.)</p>
+        <p><a href="#options">Check out other options</a>.</p>
+
+      </div>
+    </li>
+
+    <li id="options" class="main_slide" title="Options">
+      <div class="inner">
+
+        <h2>Options</h2>
+        <p>
+          Here's the parallax call again, but with all the options:
+<code>
+  $('body').parallax({
+    targets      : ".parallax_target",
+    orientation  : "vertical",
+    highest_z    : 99,
+    lowest_z     : 1,
+    force_height : 3500,
+    force_width  : 1000
+  });
+</code>
+        </p>
+        <dl>
+          <dt><strong>targets</strong>, possible : <em>any valid jQuery selector, e.g., $(".content, .article")</em></dt>
+          <dd>Just because you can use any valid jQuery selector, doesn't mean you necessarily have to be cute here. It's usually better to simply add a single class to all of the elements you want to apply the plugin to, and just select them that way.</dd>
+          <dt><strong>orientation</strong>, possible : <em>"vertical", "horizontal"</em></dt>
+          <dd></dd>
+          <dt><strong>highest_z</strong>, possible : <em>any integer</em></dt>
+          <dd></dd>
+          <dt><strong>lowest_z</strong>, possible : <em>any integer</em></dt>
+          <dd></dd>
+          <dt><strong>force_height</strong>, possible : <em>any integer, greater than your current container height</em></dt>
+          <dd></dd>
+          <dt><strong>force_width</strong>, possible : <em>any integer, greater than your current container width</em></dt>
+          <dd></dd>
+        </dl>
+
+      </div>
+    </li>
+
+    <li id="methods" class="main_slide" title="Methods">
+      <div class="inner">
+
+        <h2>Methods</h2>
+
+        <p></p>
+
+        <dl>
+          <dt>scroll_to</dt>
+          <dd></dd>
+        </dl>
+
+        <div class="slideshow"></div>
+      </div>
+    </li>
+
+    <li id="lastly" class="main_slide" title="Lastly">
+      <div class="inner">
+        <h2>Lastly.</h2>
+        <p>Check out the production version of this plugin at <a href="http://infinite.ly">Infinite.ly</a>, and feel free to <a href="http://github.com/helloluis/jQuery-Parallax">fork it on Github</a>.</p>
+      </div>
+    </li>
+  </ul>
+
+</div>
+
+
+<script language="Javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+<script language="Javascript" src="/javascripts/debug.js"></script>
+<script language="Javascript" src="/javascripts/jquery.hal.jordan.is.parallax.js"></script>
+<script>
+
+$(function(){
+
+  $("body").parallax({ 
+    targets    : ".parallax_target", 
+    highest_z  : 99, 
+    lowest_z   : 1, 
+    force_height : 3500 
+  });
+
+});
+
+</script>
+
+
+</body>
+</html>
