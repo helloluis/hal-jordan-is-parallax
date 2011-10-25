@@ -12,7 +12,7 @@ h1,h2,h3 { font-family: "Voltaire", sans-serif; letter-spacing:1px; }
 h1 { text-shadow: 0 0 3px #f90; }
 strong { color:#ff0; }
 
-#debug { background:#000; font-size:12px; color:#fff; padding:5px 10px; position:absolute; top:0px; left:0px; width:100%; min-height:10px; z-index:1000;}
+#debug { position:fixed!important; background:#000; font-size:12px; color:#fff; padding:5px 10px; position:absolute; top:0px; left:0px; width:100%; min-height:10px; z-index:1000; }
 #header {position:fixed; top:0; width:100%; min-height:20px; z-index:99; margin: 0 auto; z-index:99; left:0; }
 .header { margin: 0 auto; width: 100%; height: 49px; border-radius:0 0 0 6px; display:none; background:rgba(0,0,0,0.8); box-shadow:0 0 10px #000; }
 #header .login {  width:960px; margin:0 auto; height: 48px; }
@@ -57,15 +57,15 @@ strong { color:#ff0; }
 #welcome.main_slide p .parallax_splash { float:right; margin:0px 0px 0px 10px; }
 
 
-.parallax_target { position:absolute; overflow:hidden; }
+.parallax_target { position:fixed; overflow:hidden; }
 
-.space { position:absolute; width:100%; height:2000px; z-index:3; background:#000 url(../images/bg.jpg) 50% -120px no-repeat; left:0; }
+.space { width:100%; height:2000px; z-index:3; background:#000 url(../images/bg.jpg) 50% -120px no-repeat; left:0; }
 .planet2 { z-index:18; top:100px; left:-50px; width:525px; height:432px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; }
 .planet {z-index:7; top:300px; left:600px; width:628px; height:380px; background:transparent url(../images/new_planet.png) 0 0 no-repeat}
 .asteroids { z-index:40; top:500px; left:600px; width:650px; height:319px; background:transparent url(../images/new_asteroids4.png) no-repeat; }
 .asteroids2 { z-index:50; top:500px; left:100px; width:500px; height:417px; background:transparent url(../images/new_asteroids5.png) no-repeat; }
 .asteroids3 { z-index:60; top:500px; left:100px; width:500px; height:417px; background:transparent url(../images/new_asteroids6.png) no-repeat; }
-.moon { position:absolute; overflow:hidden; z-index:12; bottom:200px; left:400px; width:100px; height:110px; background:transparent url(../images/moon.png) 0 0 no-repeat; }
+.moon { overflow:hidden; z-index:12; bottom:200px; left:400px; width:100px; height:110px; background:transparent url(../images/moon.png) 0 0 no-repeat; }
 .stardust { z-index:4; top:150px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust.png) 0 0 no-repeat; }
 .stardust_sparks { z-index:4; top:150px; left:-100px; width:771px; height:558px; background:transparent url(../images/stardust_sparks.png) 0 0 no-repeat; }
 

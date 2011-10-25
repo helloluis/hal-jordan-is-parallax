@@ -81,7 +81,7 @@
 
   $.Mobile = ( $('body').hasClass('webkit-mobile') || (navigator.userAgent.match(/iPhone/i)) || (navigator.userAgent.match(/iPod/i)) );
   $.iPad   = (navigator.userAgent.match(/iPad/i)) ? true : false;
-  $.iPad   = true;
+  //$.iPad   = true;
 
   // this is a fix for IE, which combines background-position-x and background-position-y 
   // into a single background-position value, like other, better browsers.
@@ -131,10 +131,6 @@
   };
   
   $.Parallax.prototype = {
-
-    _init : function() {
-      
-    },
     
     _create : function( options ) {
       
@@ -213,7 +209,7 @@
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
       if ($.iPad && para.enable_for_ipad) {
-        para._setup();
+        para._setup_for_ipad();
       } else {
         para._setup();
       }
@@ -228,7 +224,8 @@
       // over and over again with very little actual effect on the layout
       var initWindowScroll = function(){
         if ($.iPad && para.enable_for_ipad===true) {
-          para.element.bind('touchmove', $.throttle(41, manualScroll) ); 
+          debug.log('initializing touchmove');
+          para.element.bind('touchmove', $.throttle(83, manualScroll) ); 
         } else {
           $(window).scroll( $.throttle(41, manualScroll) ).resize( $.debounce(100, resizeBg) );  
         }
@@ -323,7 +320,9 @@
         // var new_top = parseInt(orig_top) + (win_top * (mod/max_z));
         // debug.log( win_top, orig_top, new_top );
         // el.css({ "-webkit-transform" : "translate3d(0px," + new_top + "px,0px)" });
-        var new_top = parseInt(orig_top) + (win_top * (mod/max_z));//(win_top + parseInt(orig_top));
+        var new_top = parseInt(orig_top) - (win_top * (z/max_z)); //(win_top + parseInt(orig_top));
+        // $.Debug.text( [win_top, orig_top, new_top].join(" ") );
+        // el.css({ "-webkit-transform" : "translate3d(0px," + new_top + "px,0px)" });
         el.backgroundPosition(orig_left + " " + new_top + "px");
       }
 
@@ -348,12 +347,13 @@
 
         });
       });
+
+      para.element.css("overflow","hidden");
+
     },
 
     _setup_for_ipad : function() {
-      var para = this;
-      
-
+      this._setup();
     },
 
     //
@@ -436,7 +436,7 @@
       } else {
         para.max_height = para.options.force_height;
       }
-      debug.log( $('body').width(), $(window).width(), para.max_width, para.max_height );
+      
       $.each(para.targets, function(idx, target){
         $(this).width( para.max_width ).height( para.max_height );
       });

@@ -3,15 +3,15 @@ h1. Anatomy of a Landing Page, Episode I: The Phantom Parallax
 
 Eighteen months later, and here we all are.
 
-With our upcoming public beta release, it became apparent that Infinitely's home page deserved a celebratory makeover -- something to commemmorate both a culmination and emergence for our small team. And for the rest of the Internet, it would be the first thing they'd see of our web app, and you know what they say about first impressions.
+With our upcoming public beta release, it became apparent that Infinitely's home page deserved a celebratory makeover -- something to commemmorate what was both a culmination and emergence for our small team. And for the rest of the Internet, it would be the first thing they'd see of our web app, and you know what they say about first impressions.
 
-We had a rough idea what we wanted to do from the outset: Create an Javascript-powered interactive experience similar to "NikeBetterWorld.com":http://nikebetterworld.com or "Dentsu Network":http://dentsunetwork.com, but using our own space-themed design cues. The core technique employed on both these pages is of course called parallax, and one of the main challenges for our new page was to write our own jQuery plugin to implement this effect. (There are a few others, of course, but I'm pedantic that way.)
+We had a rough idea what we wanted to do from the outset: Create a Javascript-powered interactive experience similar to "NikeBetterWorld.com":http://nikebetterworld.com or "Dentsu Network":http://dentsunetwork.com, but using our own space-themed design cues. The core technique employed on both these pages is of course called parallax, and one of the main challenges for our new page was to write our own jQuery plugin to implement this effect. (There are a few plugins out there, of course, but I'm pedantic that way.)
 
 Quick refresher for the uninitiated: parallax is the difference in the perceived position of an object when viewed from different lines of sight. As your viewpoint shifts from side to side, objects in the distance will appear to move slower than objects that are closer to you. When recreated properly in a layout, it gives viewers a sense of depth, and can be a compelling way to give a design some extra pop.
 
 So how does one go about creating the parallax effect in-browser?
 
-The most common method is to use the act of scrolling the window as your "shifting viewpoint." As the window scrolls, objects in the background move slower than objects in the foreground (i.e., your content), such that the user has to scroll much further than normal before they exit the viewport completely. So in theory, all you would need to do is recalculate the positions of each object as the window moves, and nudge them accordingly. Here's a bit of rough code to get our cogs turning:
+The most common method is to use the act of scrolling the window as your "shifting viewpoint." As the window scrolls, objects in the background move slower than objects in the foreground (i.e., your content), such that the user has to scroll much further than normal before those objects exit the viewport completely. So in theory, all you would need to do is recalculate the positions of each object as the window moves, and nudge them accordingly. Here's a bit of pseudo code to get our cogs turning:
 
 <code>
 $(window).scroll(function(){
@@ -40,11 +40,11 @@ Initially, I thought it was performance-related, since over a hundred function c
 $(window).scroll( $.throttle(41, computePosition) );
 </code>
 
-(For illustrative purposes, let's just assume that computePosition's actual contents were similar to the expanded code described earlier.)Essentially, the $.throttle() wrapper ensures that its callbacks are triggered in _n_ millisecond increments. In my case, I chose 41. A 41-millisecond gap means that computePosition() will get triggered about 24 times per second, and from an animation standpoint, this is usually the rate at which motions start to look smooth. (Movies are traditionally shot at 24 frames per second, for example.)
+(For illustrative purposes, let's just assume that computePosition's actual contents were similar to the expanded code described earlier.) Essentially, the $.throttle() wrapper ensures that its callbacks are triggered in _n_ millisecond increments. In my case, I chose 41. A 41-millisecond gap means that computePosition() will get triggered about 24 times per second, and from an animation standpoint, this is usually the rate at which motions start to look smooth. (Movies are traditionally shot at 24 frames per second, for example.)
 
 Which, of course, didn't fix the stuttering problems, because that would've been too easy.
 
-At this point I was starting to headdesk something fierce. In retrospect, the cause of the problem seemed obvious, but back when I was building my plugin it felt completely opaque. 
+At this point I was starting to _headdesk_ something fierce. In retrospect, the cause of the problem seemed obvious, but back when I was building my plugin it felt completely opaque. 
 
 Here's what was actually happening, in slow-motion: 
 
@@ -75,6 +75,9 @@ The solution I eventually went with was to turn all of my planets and asteroids 
 </code>
 
 The idea was to programatically stretch each individual parallax_image so that it covered the entire document body, then shift its background-positions as the window was scrolled. The key to the whole solution was to set background-attachment to "fixed," which guaranteed that the browser would ignore these elements during scrolling, allowing us to do our thing undisturbed.
+
+The plugin in its bleeding-edge, unstable state is available at my github, dubbed "Hal Jordan = Parallax." You can check out the demo page here, or see it in its production state, complete with all the bells and whistles, on "Infinite.ly's landing page":http://infinite.ly . 
+
 
 
 

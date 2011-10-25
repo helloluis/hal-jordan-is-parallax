@@ -1,6 +1,6 @@
 
 $(function(){
-	
+
   $.Debug = $("#debug");
 
   $("body").parallax({ 
@@ -9,7 +9,5 @@ $(function(){
     lowest_z   : 1, 
     force_height : 3500 
   });
-
-  $.Debug.text("ipad? "+ $.iPad);
 
 });
