@@ -87,6 +87,7 @@
   // into a single background-position value, like other, better browsers.
   // THIS ISN'T CHAINABLE
   $.fn.backgroundPosition = function(new_pos) {
+
     var p = $(this).css('background-position');
     if (new_pos!==undefined) {
       var t = new_pos.split(" ");
@@ -130,7 +131,7 @@
     targets              : []
   };
   
-  $.Parallax.prototype = {
+  $.Parallax.prototype  = {
     
     _create : function( options ) {
       
@@ -202,9 +203,9 @@
         para._resize_bg();
       };
 
-      resizeBg();
-
-      para.element.height( para.max_height );
+      // resizeBg();
+      // para.element.height( para.max_height );
+      
 
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
@@ -328,22 +329,51 @@
 
     },
 
+    /*
+    The first thing we need to do is figure out how big our canvas is.
+    Then we need to apply some CSS to all of our targets to make sure that
+    we can control their positions properly. Finally we look at the given
+    top and left positions of each element and convert them into background-position
+    coordinates, after stretching them to 100% width and 100% height of the canvas.
+    We do this because we can only animate them as background-images, and not
+    as floating divs, because it causes some huge stuttering issues. 
+    See a more detailed explanation here:
+    http://blog.infinite.ly/anatomy-of-a-landing-page-episode-i-the-phant
+    */
     _setup : function() {
+      
       var para = this;
+      
+      para._resize_bg();
+      
+      para.element.height( para.max_height );
+
       $.each(para.targets, function(idx, target){
         $(target).each(function(){
           
           var tgt    = $(this),
-              tt     = tgt.backgroundPosition(),
-              ttt    = tt.split(" "),
-              top    = ttt[1],
-              left   = ttt[0],
+              tt     = para._convert_coordinates_to_background_positions( tgt.css("top"), tgt.css("left") ),
+              top    = tgt.css("top"),
+              left   = tgt.css("left"),
+              bgPosX = tt[1],
+              bgPosY = tt[0],
               zindex = parseInt(tgt.css("z-index")),
               mod    = para._calculate_modifier(zindex);
           
-          para.target_data.push([ top, left, mod, zindex ]);
+          para.target_data.push([ top, left, mod, zindex, bgPosX, bgPosY ]);
+    
+          tgt.css({
+            width    : '100%', 
+            height   : '100%', 
+            top      : 0,
+            left     : 0, 
+            backgroundAttachment : 'fixed',
+            position : 'fixed',
+            overflow : 'hidden'
+          });
 
-          tgt.css("background-attachment","fixed");
+          debug.log(tt);
+          tgt.backgroundPosition([ bgPosX, bgPosY ].join(" "));
 
         });
       });
@@ -352,8 +382,30 @@
 
     },
 
+    _convert_coordinates_to_background_positions : function( top, left ) {
+
+      return [ 
+        top===undefined ?  0 : (top.match(/%/)  ? (this.element.height() * parseInt(top)/100) + "px"  : top), 
+        left===undefined ? 0 : (left.match(/%/) ? (this.element.width()  * parseInt(left)/100) + "px" : left), 
+      ];
+      
+    },
+
     _setup_for_ipad : function() {
+      
       this._setup();
+
+      $('body').
+        bind('touchmove', function(e){
+          
+        }).
+        bind('touchstart', function(e){
+        
+        }).
+        bind('touchend', function(e){
+          
+        });
+
     },
 
     //

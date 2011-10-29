@@ -17,34 +17,29 @@
 </head>
 <body class="parallax">
 
-<div id="debug"></div>
-
 <div id="main" class="parallax" style="z-index:1">
   
   <div id="sidebar" class="sidebar">
     <div id="scrollbar">
       <div id="scrollbar-track"></div>
-      <div id="scrollbar-track-start"></div>
-      <div id="scrollbar-track-end"></div>
     </div>
     <ul id="nav">
-      <li><a href="#welcome" class="bttn bttn_welcome">Welcome</a></li>
-      <li><a href="#usage" class="bttn bttn_buzz">Usage</a></li>
-      <li><a href="#options" class="bttn bttn_analytics">Options</a></li>
-      <li><a href="#methods" class="bttn bttn_fan_page">Methods</a></li>
-      <li><a href="#conclusion" class="bttn bttn_sign_up">Lastly</a></li>
+      <li><a href="#welcome" class="bttn">Welcome</a></li>
+      <li><a href="#preparation" class="bttn">Preparation</a></li>
+      <li><a href="#usage" class="bttn">Usage</a></li>
+      <li><a href="#options" class="bttn">Options</a></li>
+      <li><a href="#lastly" class="bttn">Lastly</a></li>
     </ul>
   </div>
 
   <div class="parallax_target bg space"></div>
-  <div class="parallax_target bg planet2"></div>
+  <div class="parallax_target bg char"></div>
+  <div class="parallax_target bg aiur"></div>
+  <div class="parallax_target bg tarsonis"></div>
   <div class="parallax_target bg asteroids"></div>
   <div class="parallax_target bg asteroids2"></div>
   <div class="parallax_target bg asteroids3"></div>
-  <div class="parallax_target bg stardust"></div>
-  <div class="parallax_target bg planet"></div>
-  <div class="parallax_target bg moon"></div>
-
+  
   <ul class="main_slides">
     <li id="welcome" class="main_slide" title="Welcome">
       <div class="inner">
@@ -53,6 +48,26 @@
         This plugin was originally written for the landing page of my startup, <a href="http://infinite.ly
         " target="_blank">Infinite.ly</a>, so this demo uses many of the same graphical assets. My initial goal with writing HJ=P was to create a parallaxing system that uses z-indexes to judge the relative distance between objects, as this is already how web designers are layering their DOM elements on top of each other. It makes sense to leverage the CSS that's already there.
         <a href="#usage">Here's how to use HJ=P on your pages</a>.</p>
+      </div>
+    </li>
+
+    <li id="preparation" class="main_slide" title="Preparation">
+      <div class="inner">
+        <h2>Preparing Your Layout</h2>
+        <p>In order to prepare your page for HJ=P, you need to design your graphics with parallax in mind. Primarily this means using a lot of transparent PNGs that can be positioned on top of a large background graphic, similar to how the planets and asteroids on this demo page are arranged on top of the space background. Unfortunately this means you'll need to come up with an IE-compatible way to manage your PNGs, the precise strategy for which is beyond the scope of this plugin. 
+        <p>Each planet and asteroid group in this demo is on a separate div, positioned absolutely, and assigned a z-index. The graphics are background-images of those divs. 
+<code>
+.space { position:absolute; width:100%; height:2000px; z-index:3; background:#000 url(../images/bg.jpg) 50% -120px no-repeat; top: 0px; left:0px; }
+.tarsonis { position:absolute; z-index:18; width:350px; height:288px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; top:900px; left:5%;}
+.char { position:absolute; z-index:7; width:350px; height:212px; background:transparent url(../images/new_planet.png) 0 0 no-repeat; top:300px; left:90%; }
+.aiur { position:absolute; z-index:10; width:250px; height:191px; background:transparent url(../images/aiur.png) 0 0 no-repeat; top:10px; left:10%; }
+.asteroids { position:absolute; z-index:40; width:600px; height:190px; background:transparent url(../images/new_asteroids4.png) 0 0 no-repeat; top: 600px; left:60%; }
+.asteroids2 { position:absolute; z-index:50; width:332px; height:150px; background:transparent url(../images/new_asteroids5.png) 0 0 no-repeat; top:750px; left:20%; }
+.asteroids3 { position:absolute; z-index:60; width:350px; height:147px; background:transparent url(../images/new_asteroids6.png) 0 0 no-repeat; top:700px; left:85%; }
+</code>
+        </p>
+        <p>It's important to note that in order for HJ=P to do its magic, it will first take your graphics and muck with their CSS, changing position to "fixed," background-attachment to "fixed" and stretching the width and height to "100%" respectively. It will adjust the background-position values so that the relative position of your PNG within the layout will be largely unchanged.</p>
+
       </div>
     </li>
     
@@ -76,6 +91,7 @@
         HJ=P works by looking at the individual z-indexes of all the target elements, and slowing down their scrolling speed based on this. Specifically: <strong>the lower a z-index is, the "further away" it is, therefore, the slower it should move</strong>. A target with a z-index of 2 will be 10x slower than a target with a z-index of 20.
         </p>
         <p>You can see the effect on this page's background, with the planets, asteroids and space background all moving at different speeds as the window is scrolled up and down. In this scenario, the furthest object is obviously the space background, with the asteroids being the closest. (Well, technically, the content you're reading is the closest, since that's on the highest z-index, but the parallax plugin doesn't touch that.)</p>
+        
         <p><a href="#options">Check out other options</a>.</p>
 
       </div>
@@ -116,22 +132,6 @@
       </div>
     </li>
 
-    <li id="methods" class="main_slide" title="Methods">
-      <div class="inner">
-
-        <h2>Methods</h2>
-
-        <p></p>
-
-        <dl>
-          <dt>scroll_to</dt>
-          <dd></dd>
-        </dl>
-
-        <div class="slideshow"></div>
-      </div>
-    </li>
-
     <li id="lastly" class="main_slide" title="Lastly">
       <div class="inner">
         <h2>Lastly.</h2>
@@ -144,17 +144,17 @@
 
 
 <script language="Javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
-<script language="Javascript" src="/hal-jordan-is-parallax/javascripts/debug.js"></script>
-<script language="Javascript" src="/hal-jordan-is-parallax/javascripts/jquery.hal-jordan-is-parallax.js"></script>
+<script language="Javascript" src="javascripts/debug.js"></script>
+<script language="Javascript" src="javascripts/jquery.hal-jordan-is-parallax.js"></script>
 <script>
 
 $(function(){
 
   $("body").parallax({ 
     targets    : ".parallax_target", 
-    highest_z  : 99, 
+    highest_z  : 99,
     lowest_z   : 1, 
-    force_height : 3500 
+    force_height : 4000 
   });
 
 });
