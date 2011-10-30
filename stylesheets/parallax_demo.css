@@ -4,8 +4,8 @@
 
 .space { position:absolute; width:100%; height:2000px; z-index:3; background:#000 url(../images/bg.jpg) 50% -120px no-repeat; top: 0px; left:0px; }
 .tarsonis { position:absolute; z-index:18; width:350px; height:288px; background:transparent url(../images/new_planet2.png) 0 0 no-repeat; top:900px; left:5%;}
-.char {position:absolute; z-index:7; width:350px; height:212px; background:transparent url(../images/new_planet.png) 0 0 no-repeat; top:300px; left:90%; }
-.aiur {position:absolute; z-index:10; width:250px; height:191px; background:transparent url(../images/aiur.png) 0 0 no-repeat; top:10px; left:10%; }
+.char {position:absolute; z-index:7; width:350px; height:212px; background:transparent url(../images/new_planet.png) 0 0 no-repeat; top:300px; left:70%; }
+.aiur {position:absolute; z-index:10; width:250px; height:191px; background:transparent url(../images/aiur.png) 0 0 no-repeat; top:50px; left:2%; }
 .asteroids { position:absolute; z-index:40; width:600px; height:190px; background:transparent url(../images/new_asteroids4.png) 0 0 no-repeat; top: 600px; left:60%; }
 .asteroids2 { position:absolute; z-index:50; width:332px; height:150px; background:transparent url(../images/new_asteroids5.png) 0 0 no-repeat; top:750px; left:20%; }
 .asteroids3 { position:absolute; z-index:60; width:350px; height:147px; background:transparent url(../images/new_asteroids6.png) 0 0 no-repeat; top:700px; left:85%; }
