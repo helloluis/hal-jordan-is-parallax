@@ -186,6 +186,11 @@
       this.min_modifier = 1;
       this.max_modifier = 999;
 
+      // when a touch gesture is initiated, we store the initial coordinates here.
+      // obviously this is only relevant when the browser is iPad based, and iPad support is enabled
+      this.touch_y      = 0;
+      this.touch_x      = 0;
+
       para.max_z = 0;
       $(para.targets).each(function(idx, target){        
         var z = parseInt($(this).css("z-index"));
@@ -202,10 +207,6 @@
       var resizeBg = function() {
         para._resize_bg();
       };
-
-      // resizeBg();
-      // para.element.height( para.max_height );
-      
 
       // record each target's respective coordinates and add a parallax modifier which 
       // we'll use to figure out how to position it
@@ -290,42 +291,44 @@
     // will be scrolled off-screen as normal.
     _move_by : function( idx, el, win_top, win_left, css_attrib ) {
 
-      var orig_top  = this.target_data[idx][0],
-          orig_left = this.target_data[idx][1],
-          mod       = this.target_data[idx][2],
-          z         = this.target_data[idx][3],
-          max_z     = this.highest_z ? this.highest_z : this.max_z;
-      
-      if (this.orientation=='horizontal') {
+      var orig_top  = this.target_data[idx].top,
+          orig_left = this.target_data[idx].left,
+          mod       = this.target_data[idx].mod,
+          z         = this.target_data[idx].zindex,
+          max_z     = (this.highest_z ? this.highest_z : this.max_z),
+          new_left  = parseInt(orig_left) - (win_left * (z/max_z)),
+          new_top   = parseInt(orig_top) - (win_top * (z/max_z));
+        
+      // write the new background positions in CSS
+      el.backgroundPosition( new_left + "px " + new_top + "px");
 
-        el.backgroundPosition( (parseInt(orig_left) - (win_left * (z/max_z))) + "px " + orig_top );
+      // record the new background positions so we can retrieve them again later
+      this.target_data[idx].curX = new_left;
+      this.target_data[idx].curY = new_top;
 
-      } else if (this.orientation=='vertical') {
-
-        var new_top = parseInt(orig_top) - (win_top * (z/max_z));
-        el.backgroundPosition( orig_left + " " + new_top + "px");
-
-      }
-      
     },
 
-    _move_by_for_ipad : function( idx, el, win_top, win_left, css_attrib ) {
+    _move_by_for_ipad : function( idx, el, touch_x, touch_y, touch_x_delta, touch_y_delta ) {
       
-      var orig_top  = this.target_data[idx][0],
-          orig_left = this.target_data[idx][1],
-          mod       = this.target_data[idx][2],
-          z         = this.target_data[idx][3],
-          max_z     = this.highest_z ? this.highest_z : this.max_z;
+      var orig_top  = this.target_data[idx].top,
+          orig_left = this.target_data[idx].left,
+          mod       = this.target_data[idx].mod,
+          z         = this.target_data[idx].zindex,
+          max_z     = (this.highest_z ? this.highest_z : this.max_z),
+          new_left  = (this.target_data[idx].curX),
+          new_top   = (this.target_data[idx].curY);
 
-      if (this.orientation=='vertical') {
+      
+
+      // if (this.orientation=='vertical') {
         // var new_top = parseInt(orig_top) + (win_top * (mod/max_z));
         // debug.log( win_top, orig_top, new_top );
         // el.css({ "-webkit-transform" : "translate3d(0px," + new_top + "px,0px)" });
-        var new_top = parseInt(orig_top) - (win_top * (z/max_z)); //(win_top + parseInt(orig_top));
+        // var new_top = parseInt(orig_top) - (win_top * (z/max_z)); //(win_top + parseInt(orig_top));
         // $.Debug.text( [win_top, orig_top, new_top].join(" ") );
         // el.css({ "-webkit-transform" : "translate3d(0px," + new_top + "px,0px)" });
-        el.backgroundPosition(orig_left + " " + new_top + "px");
-      }
+        // el.backgroundPosition(orig_left + " " + new_top + "px");
+      //}
 
     },
 
@@ -353,14 +356,17 @@
           
           var tgt    = $(this),
               tt     = para._convert_coordinates_to_background_positions( tgt.css("top"), tgt.css("left") ),
-              top    = tgt.css("top"),
-              left   = tgt.css("left"),
-              bgPosX = tt[1],
-              bgPosY = tt[0],
-              zindex = parseInt(tgt.css("z-index")),
-              mod    = para._calculate_modifier(zindex);
-          
-          para.target_data.push([ top, left, mod, zindex, bgPosX, bgPosY ]);
+              hash   = {  top    : tgt.css("top"),
+                          left   : tgt.css("left"),
+                          bgPosX : tt[1],
+                          bgPosY : tt[0],
+                          zindex : parseInt(tgt.css("z-index")),
+                          mod    : para._calculate_modifier(zindex),
+                          curX   : top,
+                          curY   : left
+                        };
+              
+          para.target_data.push(hash);
     
           tgt.css({
             width    : '100%', 
@@ -372,7 +378,6 @@
             overflow : 'hidden'
           });
 
-          debug.log(tt);
           tgt.backgroundPosition([ bgPosX, bgPosY ].join(" "));
 
         });
@@ -392,19 +397,90 @@
     },
 
     _setup_for_ipad : function() {
-      
+
+      var para = this;
+            
       this._setup();
 
       $('body').
         bind('touchmove', function(e){
+
+          e.preventDefault();
+
+          var current_y  = e.touches[0].pageY, 
+              current_x  = e.touches[0].pageX,
+              moved_by_x = parseInt(current_x - para.touch_x),
+              moved_by_y = parseInt(current_y - para.touch_y);
           
+
+
+          para.targets.each(function(idx, target){
+            
+            para._move_by_for_ipad( idx, target, current_y, current_x, moved_by_y, moved_by_x );
+
+          });
+
+          // para.touch_x = current_x;
+          // para.touch_y = current_y;
+
+          // for ( layer in parallaxLayers ) {
+          //   parallaxLayers[layer].currentCoordY = Math.floor( parseInt(parallaxLayers[layer].startCoordY) + ( movedByY * parallaxLayers[layer].speed ) );
+            
+          //   if ( getForegroundY() > getMaxY() ) {
+          //     setTransform(parallaxLayers[layer].self, parallaxLayers[layer].currentCoordX, parallaxLayers[layer].currentCoordY, parallaxLayers[layer].currentCoordZ, parallaxLayers[layer].currentScale);
+          //   } else {
+          //     bottomOverscrollY = -(movedByY + getForegroundHeight());
+          //     $('div.overscroll.bottom').css('bottom', bottomOverscrollY  + "px");
+          //   }
+          // }
+          
+          //setTransform(finger[0],parseInt(currentCoordX) - 250, parseInt(currentCoordY) - 250, 0);
+
         }).
         bind('touchstart', function(e){
         
+          var para = this;
+
+          para.touch_x = e.touches[0].pageX;
+          para.touch_y = e.touches[0].pageY;
+          
+          /* Get the starting coordinates of the layers so we know what to add to or subtract from */
+          for ( layer in parallaxLayers ) {
+            parallaxLayers[layer].startCoordY = getTransform(parallaxLayers[layer].self,'y');
+          }
+          
+          // $(finger[0]).css("opacity","1");
+          //setTransform(finger[0],parseInt(startCoordX) - 250, parseInt(startCoordY) - 4750, 0);
+
         }).
         bind('touchend', function(e){
           
+          if (getForegroundY() > 0) {
+            for ( layer in parallaxLayers ) {
+              setTransform(parallaxLayers[layer].self, parallaxLayers[layer].originalCoordX, parallaxLayers[layer].originalCoordY, parallaxLayers[layer].originalCoordZ, parallaxLayers[layer].originalScale);
+            }
+          }
+
+          //$('div.overscroll.bottom').css('bottom', '-2000px');
+            
+          //$(finger[0]).css("opacity","0");
+          
         });
+
+    },
+
+    this._set_transform(id,x,y,z,s) {
+
+      translate = "translate3d(" + x + "px," + y + "px," + z + "px)";
+      
+      if ( typeof(s) !== "undefined" && s != 1 ) {
+        transform = translate + " scale(" + s + ")";
+        $("div.debug").html( $(id).attr('id') + " " + s + " " + transform );
+      } else {
+        transform = translate;
+      }
+      
+      $(id).css("-webkit-transform", transform);
 
     },
 
